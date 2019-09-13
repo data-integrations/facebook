@@ -28,6 +28,7 @@ import io.cdap.plugin.facebook.source.common.SchemaBuilder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
@@ -94,7 +95,7 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   }
 
   public List<AdsInsights.EnumBreakdowns> getBreakdowns() {
-    if (breakdowns != null) {
+    if (!Strings.isNullOrEmpty(breakdowns)) {
       return StreamSupport.stream(Arrays.spliterator(breakdowns.split(",")), false)
         .map(FacebookBatchSourceConfig::toBreakdown)
         .collect(Collectors.toList());
@@ -121,9 +122,9 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   private static AdsInsights.EnumBreakdowns toBreakdown(String stringValue) {
     return StreamSupport
       .stream(Arrays.spliterator(AdsInsights.EnumBreakdowns.values()), false)
-      .filter(enumBreakdown -> enumBreakdown.toString().equals(stringValue))
+      .filter(enumBreakdown -> Objects.equals(enumBreakdown.toString(), stringValue))
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException(String.format("%s is illegal breakdown", stringValue)));
+      .orElseThrow(() -> new IllegalArgumentException(String.format("'%s' is illegal breakdown", stringValue)));
   }
 
   @Override
