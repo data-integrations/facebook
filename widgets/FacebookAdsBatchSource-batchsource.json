@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "spec-version": "1.0"
+  },
+  "configuration-groups": [
+    {
+      "label": "General",
+      "properties": [
+        {
+          "widget-type": "textbox",
+          "label": "Reference Name",
+          "name": "referenceName"
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Access token",
+          "name": "accessToken"
+        }
+      ]
+    },
+    {
+      "label": "Object query parameters",
+      "properties": [
+        {
+          "name": "objectId",
+          "label": "Object Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "objectType",
+          "label": "Object Type",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "Ad",
+            "values": [
+              "Campaign",
+              "Ad",
+              "Ad Set",
+              "Account"
+            ]
+          }
+        },
+        {
+          "label": "Level",
+          "name": "level",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "default",
+            "values": [
+              "ad",
+              "adset",
+              "campaign",
+              "account",
+              "default"
+            ]
+          }
+        },
+        {
+          "name": "fields",
+          "label": "Fields",
+          "widget-type": "dsv",
+          "widget-attributes": {
+            "delimiter": ","
+          }
+        },
+        {
+          "name": "breakdowns",
+          "label": "Breakdowns",
+          "widget-type": "dsv",
+          "widget-attributes": {
+            "delimiter": ","
+          }
+        },
+        {
+          "name": "sorting",
+          "label": "Sorting",
+          "widget-type": "textbox"
+        }
+      ]
+    },
+    {
+      "label": "API limits",
+      "properties": [
+        {
+          "name": "filtering",
+          "label": "Filtering",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "timeRanges",
+          "label": "Time ranges",
+          "widget-type": "textbox"
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "widget-type": "non-editable-schema-editor",
+      "schema": {
+      }
+    }
+  ]
+}
