@@ -16,12 +16,15 @@
 
 package io.cdap.plugin.facebook.source.common;
 
+import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,10 +32,12 @@ import java.util.stream.Collectors;
  * Helper class to map Facebook Insights fields sets to final {@link Schema}.
  */
 public class SchemaBuilder {
-  public static Schema buildSchema(List<String> fields) {
+  public static Schema buildSchema(List<String> fields, List<AdsInsights.EnumBreakdowns> breakdowns) {
+    Set<String> schemaFields = Sets.newHashSet(fields);
+    breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
     return Schema.recordOf(
       "FacebookAdsInsights",
-      fields.stream().map(SchemaBuilder::fromName).collect(Collectors.toList()));
+      schemaFields.stream().map(SchemaBuilder::fromName).collect(Collectors.toList()));
   }
 
   private static final Map<String, String> API_FIELD_NAME_TO_SCHEMA_NAME = ImmutableMap.<String, String>builder()
@@ -75,16 +80,17 @@ public class SchemaBuilder {
       Schema.Field.of("value", Schema.nullableOf(Schema.of(Schema.Type.STRING)))
     );
   }
+
   /**
    * Transforms api field name to schema field name.
-   *
+   * <p>
    * This is required, since some of Facebook API fields not compatible with Avro naming conventions.
    */
   static String fieldNameToSchemaName(String fieldName) {
     return API_FIELD_NAME_TO_SCHEMA_NAME.getOrDefault(fieldName, fieldName);
   }
 
-  private static Schema.Field fromName(String name) {
+  public static Schema.Field fromName(String name) {
     switch (name) {
       case "account_currency":
       case "account_id":
@@ -313,11 +319,11 @@ public class SchemaBuilder {
 
   /**
    * Checks if filed name is valid to be passed to "filed" parameter.
-   *
+   * <p>
    * Some of fields is generated when specific breakdown specified and can't be passed to "field" parameter.
    * This method is used to filter out such fields.
    */
-  public static boolean isValidForFields(String fieldName) {
+  public static boolean isValidForFieldsParameter(String fieldName) {
     switch (fieldName) {
       case "account_currency":
       case "account_id":

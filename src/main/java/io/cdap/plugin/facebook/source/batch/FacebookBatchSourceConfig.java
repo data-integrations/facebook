@@ -25,6 +25,7 @@ import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.plugin.facebook.source.common.BaseSourceConfig;
 import io.cdap.plugin.facebook.source.common.SchemaBuilder;
+import io.cdap.plugin.facebook.source.common.exceptions.IllegalBreakdownException;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.Arrays;
@@ -97,7 +98,7 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   Schema getSchema() {
     if (schema == null) {
-      schema = SchemaBuilder.buildSchema(getFields());
+      schema = SchemaBuilder.buildSchema(getFields(), getBreakdowns());
     }
     return schema;
   }
@@ -136,37 +137,35 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
       .stream(Arrays.spliterator(AdsInsights.EnumBreakdowns.values()), false)
       .filter(enumBreakdown -> Objects.equals(enumBreakdown.toString(), stringValue))
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException(String.format("'%s' is illegal breakdown", stringValue)));
+      .orElseThrow(() -> new IllegalBreakdownException(stringValue));
   }
 
   @Override
   public void validate(FailureCollector failureCollector) {
     super.validate(failureCollector);
 
+    try {
+      getBreakdowns();
+    } catch (IllegalBreakdownException ex) {
+      failureCollector
+        .addFailure(ex.getMessage(), "Remove invalid breakdowns.")
+        .withConfigElement(PROPERTY_BREAKDOWNS, ex.getBreakDownName());
+    }
+
     if (Strings.isNullOrEmpty(fields) && getFields().size() == 0) {
       failureCollector
         .addFailure("At least one field must be specified.", "Specify valid fields.")
         .withConfigProperty(PROPERTY_FIELDS);
-    }
-
-    try {
-      getBreakdowns();
-    } catch (IllegalArgumentException ex) {
-      failureCollector
-        .addFailure(ex.getMessage(), "Remove invalid breakdowns.")
-        .withConfigProperty(PROPERTY_BREAKDOWNS);
-    }
-
-    try {
-      getSchema();
-    } catch (IllegalArgumentException ex) {
-      failureCollector
-        .addFailure("Invalid output schema:" + ex.getMessage(), null)
-        .withStacktrace(ex.getStackTrace());
-    } catch (IllegalInsightsFieldException ex) {
-      failureCollector
-        .addFailure("Invalid field:" + ex.getFieldName(), "Remove invalid field.")
-        .withStacktrace(ex.getStackTrace());
+    } else {
+      getFields().forEach(field -> {
+        try {
+          SchemaBuilder.fromName(field);
+        } catch (IllegalInsightsFieldException ex) {
+          failureCollector
+            .addFailure("Invalid field:" + ex.getFieldName(), "Remove invalid field.")
+            .withConfigElement(PROPERTY_FIELDS, ex.getFieldName());
+        }
+      });
     }
   }
 }

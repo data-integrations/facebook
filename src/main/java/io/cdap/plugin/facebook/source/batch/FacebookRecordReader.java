@@ -55,7 +55,7 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
       InsightsRequest request = InsightsRequestFactory.createRequest(fbConfig);
       List<String> fieldsToQuery = fbConfig.getFields()
         .stream()
-        .filter(SchemaBuilder::isValidForFields)
+        .filter(SchemaBuilder::isValidForFieldsParameter)
         .collect(Collectors.toList());
       fieldsToQuery.forEach(request::requestField);
       request.setBreakdowns(fbConfig.getBreakdowns());

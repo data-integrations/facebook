@@ -21,14 +21,7 @@ Properties
 
 **Fields:** Fields to be queried.
 
-This fields will be used to generate output record schema.
-Note, some of fields will be included in response only if specific breakdown is selected(*age* for example).
-See Facebook Insights Api documentation for more information.
-
 **Breakdowns:** Breakdowns to be applied to query.
-
-Note, breakdowns will introduce additional fields to output, user must manually include them to **Fields** property.
-For exact mapping between breakdowns and output fields see Facebook Insights Api documentation.
 
 **Sorting:** Sorting rules to be applied to query.
 ### API limits
