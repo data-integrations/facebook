@@ -23,7 +23,7 @@ public class IllegalBreakdownException extends RuntimeException {
   private String breakDownName;
 
   public IllegalBreakdownException(String breakDownName) {
-    super(String.format("'%s' is not a valid field to select", breakDownName));
+    super(String.format("'%s' is not a valid breakdown to select", breakDownName));
     this.breakDownName = breakDownName;
   }
 
