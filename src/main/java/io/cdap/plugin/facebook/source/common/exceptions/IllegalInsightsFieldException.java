@@ -14,29 +14,20 @@
  * the License.
  */
 
-package io.cdap.plugin.facebook.source.common;
-
-import java.util.Arrays;
+package io.cdap.plugin.facebook.source.common.exceptions;
 
 /**
- * Convenience enum to map UI selections to meaningful values.
+ * Indicates illegal field in Facebook Insights API.
  */
-public enum ObjectType {
-  Campaign("Campaign"),
-  Ad("Ad"),
-  AdSet("Ad Set"),
-  Account("Account");
+public class IllegalInsightsFieldException extends RuntimeException {
+  private String fieldName;
 
-  private String stringValue;
-
-  ObjectType(String stringValue) {
-    this.stringValue = stringValue;
+  public IllegalInsightsFieldException(String fieldName) {
+    super(String.format("'%s' is not a valid field to select", fieldName));
+    this.fieldName = fieldName;
   }
 
-  static ObjectType fromString(String value) {
-    return Arrays.stream(ObjectType.values())
-      .filter(type -> type.stringValue.equals(value))
-      .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException(String.format("'%s' is invalid ObjectType.", value)));
+  public String getFieldName() {
+    return fieldName;
   }
 }

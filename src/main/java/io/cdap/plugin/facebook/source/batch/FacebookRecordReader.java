@@ -74,7 +74,7 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
       currentPage = request.execute();
       currentPageIterator = currentPage.iterator();
     } catch (APIException e) {
-      throw new IOException(e.getMessage());
+      throw new IOException(e.getMessage(), e);
     }
   }
 
@@ -91,13 +91,13 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
           return nextKeyValue();
         }
       } catch (APIException e) {
-        throw new IOException(e.getMessage());
+        throw new IOException(e.getMessage(), e);
       }
+      return false;
     } else {
       currentInsight = currentPageIterator.next();
       return true;
     }
-    return false;
   }
 
   @Override

@@ -18,6 +18,7 @@ package io.cdap.plugin.facebook.source.common;
 
 import com.google.common.collect.ImmutableMap;
 import io.cdap.cdap.api.data.schema.Schema;
+import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.List;
 import java.util.Map;
@@ -305,8 +306,9 @@ public class SchemaBuilder {
       case "website_ctr":
       case "website_purchase_roas":
         return Schema.Field.of(name, Schema.nullableOf(Schema.arrayOf(createAddActionStatsSchema())));
+      default:
+        throw new IllegalInsightsFieldException(name);
     }
-    throw new IllegalArgumentException(String.format("'%s' is not a valid field to select", name));
   }
 
   /**

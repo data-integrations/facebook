@@ -53,13 +53,12 @@ public class FacebookBatchSource extends BatchSource<NullWritable, AdsInsights, 
 
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
-    config.validate();
+    config.validate(pipelineConfigurer.getStageConfigurer().getFailureCollector());
     pipelineConfigurer.getStageConfigurer().setOutputSchema(config.getSchema());
   }
 
   @Override
   public void prepareRun(BatchSourceContext batchSourceContext) throws Exception {
-    config.validate();
     LineageRecorder lineageRecorder = new LineageRecorder(batchSourceContext, config.referenceName);
     lineageRecorder.createExternalDataset(config.getSchema());
     lineageRecorder.recordRead("Read", "Reading Facebook Insights",

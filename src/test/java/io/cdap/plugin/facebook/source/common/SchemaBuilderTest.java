@@ -17,6 +17,7 @@
 package io.cdap.plugin.facebook.source.common;
 
 import io.cdap.cdap.api.data.schema.Schema;
+import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class SchemaBuilderTest {
     Assert.assertTrue(expectedSchema.isCompatible(resultingSchema));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = IllegalInsightsFieldException.class)
   public void buildSchemaInvalidField() {
     SchemaBuilder.buildSchema(Arrays.asList("ad_id", "actions_results", "actions", "invalid"));
   }

@@ -20,23 +20,28 @@ import com.google.common.base.Strings;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
+import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.plugin.common.ReferencePluginConfig;
 
 /**
  * Base configuration for facebook sources.
  */
 public class BaseSourceConfig extends ReferencePluginConfig {
-  @Name("accessToken")
+  public static final String PROPERTY_ACCESS_TOKEN = "accessToken";
+  public static final String PROPERTY_OBJECT_TYPE = "objectType";
+  public static final String PROPERTY_OBJECT_ID = "objectId";
+
+  @Name(PROPERTY_ACCESS_TOKEN)
   @Description("Access Token.")
   @Macro
   protected String accessToken;
 
-  @Name("objectType")
+  @Name(PROPERTY_OBJECT_TYPE)
   @Description("Object Type.")
   @Macro
   protected String objectType;
 
-  @Name("objectId")
+  @Name(PROPERTY_OBJECT_ID)
   @Description("Object Id.")
   @Macro
   protected String objectId;
@@ -57,21 +62,27 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return objectId;
   }
 
-  public void validate() {
-    if (!containsMacro("accessToken")) {
-      if (Strings.isNullOrEmpty(accessToken)) {
-        throw new IllegalArgumentException("accessToken must be not empty");
-      }
+  public void validate(FailureCollector failureCollector) {
+    if (Strings.isNullOrEmpty(accessToken)) {
+      failureCollector
+        .addFailure("accessToken must be not empty.", "Enter valid access token.")
+        .withConfigProperty(PROPERTY_ACCESS_TOKEN);
     }
-    if (!containsMacro("objectType")) {
-      if (Strings.isNullOrEmpty(accessToken) && getObjectType() == null) {
-        throw new IllegalArgumentException("objectType must be not empty");
-      }
+
+    try {
+      getObjectType();
+    } catch (IllegalArgumentException ex) {
+      failureCollector
+        .addFailure(
+          ex.getMessage(),
+          "Choose one of 'Campaign', 'Ad', 'Ad Set' or 'Account'.")
+        .withConfigProperty(PROPERTY_OBJECT_TYPE);
     }
-    if (!containsMacro("objectId")) {
-      if (Strings.isNullOrEmpty(accessToken)) {
-        throw new IllegalArgumentException("objectType must be not empty");
-      }
+
+    if (Strings.isNullOrEmpty(objectId)) {
+      failureCollector
+        .addFailure("objectId must be not empty.", "Enter valid object id.")
+        .withConfigProperty(PROPERTY_OBJECT_ID);
     }
   }
 }
