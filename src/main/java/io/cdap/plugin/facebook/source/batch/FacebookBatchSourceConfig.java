@@ -28,6 +28,7 @@ import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.plugin.facebook.source.common.SchemaHelper;
 import io.cdap.plugin.facebook.source.common.config.BaseSourceConfig;
 import io.cdap.plugin.facebook.source.common.config.Breakdowns;
+import io.cdap.plugin.facebook.source.common.config.Filter;
 import io.cdap.plugin.facebook.source.common.config.SourceConfigHelper;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalBreakdownException;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
@@ -113,7 +114,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   Schema getSchema() {
     if (schema == null) {
-      // TODO fix this
       schema = SchemaHelper.buildSchema(getFields(), getBreakdown());
     }
     return schema;
@@ -142,11 +142,17 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   @Nullable
   public String getFiltering() {
     if (!Strings.isNullOrEmpty(filtering)) {
-      return gson.toJson(
-        Arrays.stream(filtering.split(FILTERING_DELIMITER))
+      return gson.toJson(getFilters());
+    } else {
+      return null;
+    }
+  }
+
+  public List<Filter> getFilters() {
+    if (!Strings.isNullOrEmpty(filtering)) {
+      return Arrays.stream(filtering.split(FILTERING_DELIMITER))
           .map(SourceConfigHelper::parseFilteringItem)
-          .collect(Collectors.toList())
-      );
+          .collect(Collectors.toList());
     } else {
       return null;
     }

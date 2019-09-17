@@ -17,9 +17,12 @@
 package io.cdap.plugin.facebook.source.common;
 
 import io.cdap.cdap.api.data.schema.Schema;
+import io.cdap.plugin.facebook.source.common.config.SourceConfigHelper;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 public class SchemaHelperTest {
 
@@ -29,23 +32,21 @@ public class SchemaHelperTest {
       "TestSchema",
       Schema.Field.of("ad_id", Schema.nullableOf(Schema.of(Schema.Type.STRING))),
       Schema.Field.of("age", Schema.nullableOf(Schema.of(Schema.Type.STRING))),
+      Schema.Field.of("gender", Schema.nullableOf(Schema.of(Schema.Type.STRING))),
       Schema.Field.of("actions_results", Schema.nullableOf(SchemaHelper.createAddActionStatsSchema())),
       Schema.Field.of("actions", Schema.nullableOf(Schema.arrayOf(SchemaHelper.createAddActionStatsSchema()))));
 
-    // TODO
-//    Schema resultingSchema = SchemaHelper.buildSchema(
-//      Arrays.asList("ad_id", "actions_results", "actions"),
-//      Collections.singletonList(AdsInsights.EnumBreakdowns.VALUE_AGE)
-//    );
-//
-//    Assert.assertTrue(expectedSchema.isCompatible(resultingSchema));
+    Schema resultingSchema = SchemaHelper.buildSchema(
+      Arrays.asList("ad_id", "actions_results", "actions"), // age and gender will be added from breakdown
+      SourceConfigHelper.parseBreakdowns("age, gender *")
+    );
+
+    Assert.assertTrue(expectedSchema.isCompatible(resultingSchema));
   }
 
   @Test(expected = IllegalInsightsFieldException.class)
   public void buildSchemaInvalidField() {
-    // TODO
-//    SchemaHelper.buildSchema(Arrays.asList("ad_id", "actions_results", "actions", "invalid"),
-//                             Collections.emptyList());
+    SchemaHelper.buildSchema(Arrays.asList("ad_id", "actions_results", "actions", "invalid"), null);
   }
 
   @Test

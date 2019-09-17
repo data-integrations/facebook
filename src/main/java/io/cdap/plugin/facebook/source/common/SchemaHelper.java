@@ -16,6 +16,7 @@
 
 package io.cdap.plugin.facebook.source.common;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import io.cdap.cdap.api.data.schema.Schema;
@@ -34,8 +35,23 @@ import java.util.stream.Collectors;
 public class SchemaHelper {
   public static Schema buildSchema(List<String> fields, Breakdowns breakdowns) {
     Set<String> schemaFields = Sets.newHashSet(fields);
-//    breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
-    // TODO fix fields
+    // ensure that fields introduced by breakdowns added to schema
+    if (breakdowns != null) {
+      breakdowns.getActionBreakdowns().forEach(
+        breakdownValue -> {
+          if (breakdownsWithFields.contains(breakdownValue.toString())) {
+            schemaFields.add(breakdownValue.toString());
+          }
+        }
+      );
+      breakdowns.getBreakdowns().forEach(
+        breakdownValue -> {
+          if (breakdownsWithFields.contains(breakdownValue.toString())) {
+            schemaFields.add(breakdownValue.toString());
+          }
+        }
+      );
+    }
     return Schema.recordOf(
       "FacebookAdsInsights",
       schemaFields.stream().map(SchemaHelper::fromName).collect(Collectors.toList()));
@@ -319,103 +335,126 @@ public class SchemaHelper {
   }
 
   /**
+   * Breakdowns that will directly introduce field in schema.
+   */
+  private static List<String> breakdownsWithFields = ImmutableList.copyOf(
+    new String[]{
+      "age",
+      "country",
+      "gender",
+      "impression_device",
+      "product_id",
+      "region",
+      "dma",
+      "frequency_value",
+      "hourly_stats_aggregated_by_advertiser_time_zone",
+      "hourly_stats_aggregated_by_audience_time_zone",
+      "place_page_id",
+      "publisher_platform",
+      "platform_position",
+      "device_platform",
+    }
+  );
+
+  private static List<String> validFieldsParamValues = ImmutableList.copyOf(
+    new String[]{
+      "account_currency",
+      "account_id",
+      "account_name",
+      "action_values",
+      "actions",
+      "ad_id",
+      "ad_name",
+      "adset_id",
+      "adset_name",
+      "app_store_clicks",
+      "buying_type",
+      "campaign_id",
+      "campaign_name",
+      "canvas_avg_view_percent",
+      "canvas_avg_view_time",
+      "clicks",
+      "conversion_rate_ranking",
+      "conversion_values",
+      "conversions",
+      "cost_per_10_sec_video_view",
+      "cost_per_action_type",
+      "cost_per_conversion",
+      "cost_per_estimated_ad_recallers",
+      "cost_per_inline_link_click",
+      "cost_per_inline_post_engagement",
+      "cost_per_outbound_click",
+      "cost_per_thruplay",
+      "cost_per_unique_action_type",
+      "cost_per_unique_click",
+      "cost_per_unique_inline_link_click",
+      "cost_per_unique_outbound_click",
+      "cpc",
+      "cpm",
+      "cpp",
+      "ctr",
+      "date_start",
+      "date_stop",
+      "deeplink_clicks",
+      "engagement_rate_ranking",
+      "estimated_ad_recall_rate",
+      "estimated_ad_recallers",
+      "frequency",
+      "full_view_impressions",
+      "full_view_reach",
+      "impressions",
+      "inline_link_click_ctr",
+      "inline_link_clicks",
+      "inline_post_engagement",
+      "instant_experience_clicks_to_open",
+      "instant_experience_clicks_to_start",
+      "instant_experience_outbound_clicks",
+      "mobile_app_purchase_roas",
+      "newsfeed_avg_position",
+      "newsfeed_clicks",
+      "newsfeed_impressions",
+      "objective",
+      "outbound_clicks",
+      "outbound_clicks_ctr",
+      "purchase_roas",
+      "quality_ranking",
+      "reach",
+      "relevance_score",
+      "social_spend",
+      "spend",
+      "unique_actions",
+      "unique_clicks",
+      "unique_ctr",
+      "unique_impressions",
+      "unique_inline_link_click_ctr",
+      "unique_inline_link_clicks",
+      "unique_link_clicks_ctr",
+      "unique_outbound_clicks",
+      "unique_outbound_clicks_ctr",
+      "video_10_sec_watched_actions",
+      "video_30_sec_watched_actions",
+      "video_avg_time_watched_actions",
+      "video_complete_watched_actions",
+      "video_p100_watched_actions",
+      "video_p25_watched_actions",
+      "video_p50_watched_actions",
+      "video_p75_watched_actions",
+      "video_play_actions",
+      "video_play_curve_actions",
+      "video_thruplay_watched_actions",
+      "website_clicks",
+      "website_ctr",
+      "website_purchase_roas"
+    }
+  );
+
+  /**
    * Checks if filed name is valid to be passed to "filed" parameter.
    * <p>
    * Some of fields is generated when specific breakdown specified and can't be passed to "field" parameter.
    * This method is used to filter out such fields.
    */
   public static boolean isValidForFieldsParameter(String fieldName) {
-    switch (fieldName) {
-      case "account_currency":
-      case "account_id":
-      case "account_name":
-      case "action_values":
-      case "actions":
-      case "ad_id":
-      case "ad_name":
-      case "adset_id":
-      case "adset_name":
-      case "app_store_clicks":
-      case "buying_type":
-      case "campaign_id":
-      case "campaign_name":
-      case "canvas_avg_view_percent":
-      case "canvas_avg_view_time":
-      case "clicks":
-      case "conversion_rate_ranking":
-      case "conversion_values":
-      case "conversions":
-      case "cost_per_10_sec_video_view":
-      case "cost_per_action_type":
-      case "cost_per_conversion":
-      case "cost_per_estimated_ad_recallers":
-      case "cost_per_inline_link_click":
-      case "cost_per_inline_post_engagement":
-      case "cost_per_outbound_click":
-      case "cost_per_thruplay":
-      case "cost_per_unique_action_type":
-      case "cost_per_unique_click":
-      case "cost_per_unique_inline_link_click":
-      case "cost_per_unique_outbound_click":
-      case "cpc":
-      case "cpm":
-      case "cpp":
-      case "ctr":
-      case "date_start":
-      case "date_stop":
-      case "deeplink_clicks":
-      case "engagement_rate_ranking":
-      case "estimated_ad_recall_rate":
-      case "estimated_ad_recallers":
-      case "frequency":
-      case "full_view_impressions":
-      case "full_view_reach":
-      case "impressions":
-      case "inline_link_click_ctr":
-      case "inline_link_clicks":
-      case "inline_post_engagement":
-      case "instant_experience_clicks_to_open":
-      case "instant_experience_clicks_to_start":
-      case "instant_experience_outbound_clicks":
-      case "mobile_app_purchase_roas":
-      case "newsfeed_avg_position":
-      case "newsfeed_clicks":
-      case "newsfeed_impressions":
-      case "objective":
-      case "outbound_clicks":
-      case "outbound_clicks_ctr":
-      case "purchase_roas":
-      case "quality_ranking":
-      case "reach":
-      case "relevance_score":
-      case "social_spend":
-      case "spend":
-      case "unique_actions":
-      case "unique_clicks":
-      case "unique_ctr":
-      case "unique_impressions":
-      case "unique_inline_link_click_ctr":
-      case "unique_inline_link_clicks":
-      case "unique_link_clicks_ctr":
-      case "unique_outbound_clicks":
-      case "unique_outbound_clicks_ctr":
-      case "video_10_sec_watched_actions":
-      case "video_30_sec_watched_actions":
-      case "video_avg_time_watched_actions":
-      case "video_complete_watched_actions":
-      case "video_p100_watched_actions":
-      case "video_p25_watched_actions":
-      case "video_p50_watched_actions":
-      case "video_p75_watched_actions":
-      case "video_play_actions":
-      case "video_play_curve_actions":
-      case "video_thruplay_watched_actions":
-      case "website_clicks":
-      case "website_ctr":
-      case "website_purchase_roas":
-        return true;
-      default:
-        return false;
-    }
+    return validFieldsParamValues.contains(fieldName);
   }
 }
