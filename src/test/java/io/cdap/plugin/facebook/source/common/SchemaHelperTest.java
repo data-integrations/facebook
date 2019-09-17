@@ -25,7 +25,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class SchemaBuilderTest {
+public class SchemaHelperTest {
 
   @Test
   public void buildSchema() {
@@ -33,10 +33,10 @@ public class SchemaBuilderTest {
       "TestSchema",
       Schema.Field.of("ad_id", Schema.nullableOf(Schema.of(Schema.Type.STRING))),
       Schema.Field.of("age", Schema.nullableOf(Schema.of(Schema.Type.STRING))),
-      Schema.Field.of("actions_results", Schema.nullableOf(SchemaBuilder.createAddActionStatsSchema())),
-      Schema.Field.of("actions", Schema.nullableOf(Schema.arrayOf(SchemaBuilder.createAddActionStatsSchema()))));
+      Schema.Field.of("actions_results", Schema.nullableOf(SchemaHelper.createAddActionStatsSchema())),
+      Schema.Field.of("actions", Schema.nullableOf(Schema.arrayOf(SchemaHelper.createAddActionStatsSchema()))));
 
-    Schema resultingSchema = SchemaBuilder.buildSchema(
+    Schema resultingSchema = SchemaHelper.buildSchema(
       Arrays.asList("ad_id", "actions_results", "actions"),
       Collections.singletonList(AdsInsights.EnumBreakdowns.VALUE_AGE)
     );
@@ -46,13 +46,13 @@ public class SchemaBuilderTest {
 
   @Test(expected = IllegalInsightsFieldException.class)
   public void buildSchemaInvalidField() {
-    SchemaBuilder.buildSchema(Arrays.asList("ad_id", "actions_results", "actions", "invalid"),
-                              Collections.emptyList());
+    SchemaHelper.buildSchema(Arrays.asList("ad_id", "actions_results", "actions", "invalid"),
+                             Collections.emptyList());
   }
 
   @Test
   public void fieldNameToSchemaName() {
-    Assert.assertEquals("view_7d", SchemaBuilder.fieldNameToSchemaName("7d_view"));
-    Assert.assertEquals("not_mapped", SchemaBuilder.fieldNameToSchemaName("not_mapped"));
+    Assert.assertEquals("view_7d", SchemaHelper.fieldNameToSchemaName("7d_view"));
+    Assert.assertEquals("not_mapped", SchemaHelper.fieldNameToSchemaName("not_mapped"));
   }
 }

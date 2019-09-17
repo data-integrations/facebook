@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 /**
  * Helper class to map Facebook Insights fields sets to final {@link Schema}.
  */
-public class SchemaBuilder {
+public class SchemaHelper {
   public static Schema buildSchema(List<String> fields, List<AdsInsights.EnumBreakdowns> breakdowns) {
     Set<String> schemaFields = Sets.newHashSet(fields);
     breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
     return Schema.recordOf(
       "FacebookAdsInsights",
-      schemaFields.stream().map(SchemaBuilder::fromName).collect(Collectors.toList()));
+      schemaFields.stream().map(SchemaHelper::fromName).collect(Collectors.toList()));
   }
 
   private static final Map<String, String> API_FIELD_NAME_TO_SCHEMA_NAME = ImmutableMap.<String, String>builder()

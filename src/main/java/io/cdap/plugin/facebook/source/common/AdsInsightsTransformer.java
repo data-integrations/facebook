@@ -68,7 +68,7 @@ public class AdsInsightsTransformer {
   private static StructuredRecord fromJsonObject(Schema schema, JsonObject object) {
     StructuredRecord.Builder builder = StructuredRecord.builder(schema);
     object.entrySet().forEach(entry -> {
-      String fieldName = SchemaBuilder.fieldNameToSchemaName(entry.getKey());
+      String fieldName = SchemaHelper.fieldNameToSchemaName(entry.getKey());
       if (schemaContainsField(schema, fieldName)) {
         builder.set(fieldName, entry.getValue().getAsJsonPrimitive().getAsString());
       }

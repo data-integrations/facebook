@@ -21,7 +21,7 @@ import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdsInsights;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.cdap.plugin.facebook.source.common.SchemaBuilder;
+import io.cdap.plugin.facebook.source.common.SchemaHelper;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequest;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequestFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -55,7 +55,7 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
       InsightsRequest request = InsightsRequestFactory.createRequest(fbConfig);
       List<String> fieldsToQuery = fbConfig.getFields()
         .stream()
-        .filter(SchemaBuilder::isValidForFieldsParameter)
+        .filter(SchemaHelper::isValidForFieldsParameter)
         .collect(Collectors.toList());
       fieldsToQuery.forEach(request::requestField);
       request.setBreakdowns(fbConfig.getBreakdowns());
