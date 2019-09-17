@@ -16,6 +16,7 @@
 
 package io.cdap.plugin.facebook.source.batch;
 
+import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,7 +45,8 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   public static final String PROPERTY_FIELDS = "fields";
   public static final String PROPERTY_LEVEL = "level";
-  public static final String PROPERTY_BREAKDOWNS = "breakdowns";
+  public static final String PROPERTY_BREAKDOWN = "breakdown";
+  public static final String PROPERTY_ADDITIONAL_BREAKDOWN = "additionalBreakdown";
   public static final String PROPERTY_FILTERING = "filtering";
   public static final String PROPERTY_TIME_RANGES = "timeRanges";
   public static final String PROPERTY_SORTING = "sorting";
@@ -67,11 +69,17 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   protected String level;
 
 
-  @Name(PROPERTY_BREAKDOWNS)
-  @Description("Breakdowns to query.")
+  @Name(PROPERTY_BREAKDOWN)
+  @Description("Primary breakdown.")
   @Nullable
   @Macro
-  protected String breakdowns;
+  protected String breakdown;
+
+  @Name(PROPERTY_ADDITIONAL_BREAKDOWN)
+  @Description("Additional breakdown. Can be selected with primary breakdowns marked by '*'.")
+  @Nullable
+  @Macro
+  protected String additionalBreakdown;
 
   @Name(PROPERTY_FILTERING)
   @Description("Filters to query with.")
@@ -106,7 +114,7 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   Schema getSchema() {
     if (schema == null) {
       // TODO fix this
-      schema = SchemaHelper.buildSchema(getFields(), getBreakdowns());
+      schema = SchemaHelper.buildSchema(getFields(), getBreakdown());
     }
     return schema;
   }
@@ -115,9 +123,17 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     return level;
   }
 
-  public Breakdowns getBreakdowns() {
-    if (!Strings.isNullOrEmpty(breakdowns)) {
-      return SourceConfigHelper.parseBreakdowns(breakdowns);
+  public Breakdowns getBreakdown() {
+    if (!Strings.isNullOrEmpty(breakdown) && !"none".equals(breakdown)) {
+      Breakdowns result = SourceConfigHelper.parseBreakdowns(breakdown);
+      if (!Strings.isNullOrEmpty(additionalBreakdown) && !"none".equals(additionalBreakdown)) {
+        AdsInsights.EnumActionBreakdowns additionalActionBreakdown =
+          SourceConfigHelper.actionBreakdownFromString(additionalBreakdown);
+        if (result.isJoinableWithAction() && result.getActionBreakdowns().contains(additionalActionBreakdown)) {
+          result.getActionBreakdowns().add(additionalActionBreakdown);
+        }
+      }
+      return result;
     } else {
       return null;
     }
@@ -157,11 +173,11 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   void validateBreakdowns(FailureCollector failureCollector) {
     try {
-      getBreakdowns();
+      getBreakdown();
     } catch (IllegalBreakdownException ex) {
       failureCollector
-        .addFailure(ex.getMessage(), "Remove invalid breakdowns.")
-        .withConfigProperty(PROPERTY_BREAKDOWNS);
+        .addFailure(ex.getMessage(), "Fix invalid breakdown value.")
+        .withConfigProperty(PROPERTY_BREAKDOWN);
     }
   }
 

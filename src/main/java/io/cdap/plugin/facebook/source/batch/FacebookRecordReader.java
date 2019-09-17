@@ -22,6 +22,7 @@ import com.facebook.ads.sdk.AdsInsights;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.cdap.plugin.facebook.source.common.SchemaHelper;
+import io.cdap.plugin.facebook.source.common.config.Breakdowns;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequest;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequestFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -58,7 +59,18 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
         .filter(SchemaHelper::isValidForFieldsParameter)
         .collect(Collectors.toList());
       fieldsToQuery.forEach(request::requestField);
-      request.setBreakdowns(fbConfig.getBreakdowns());
+
+      Breakdowns breakdowns = fbConfig.getBreakdown();
+
+      if (breakdowns != null) {
+        if (!breakdowns.getBreakdowns().isEmpty()) {
+          request.setBreakdowns(breakdowns.getBreakdowns());
+        }
+        if (!breakdowns.getActionBreakdowns().isEmpty()) {
+          request.setActionBreakdowns(breakdowns.getActionBreakdowns());
+        }
+      }
+
       if (fbConfig.getFiltering() != null) {
         request.setParam("filtering", fbConfig.getFiltering());
       }

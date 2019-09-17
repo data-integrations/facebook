@@ -28,6 +28,7 @@ import java.util.List;
 public interface InsightsRequest {
   void requestField(String fieldName);
   void setParam(String paramName, Object value);
-  void setBreakdowns(List<AdsInsights.EnumBreakdowns> breakdown);
+  void setBreakdowns(List<AdsInsights.EnumBreakdowns> breakdowns);
+  void setActionBreakdowns(List<AdsInsights.EnumActionBreakdowns> breakdowns);
   APINodeList<AdsInsights> execute() throws APIException;
 }

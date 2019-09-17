@@ -35,6 +35,7 @@ public class SchemaHelper {
   public static Schema buildSchema(List<String> fields, Breakdowns breakdowns) {
     Set<String> schemaFields = Sets.newHashSet(fields);
 //    breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
+    // TODO fix fields
     return Schema.recordOf(
       "FacebookAdsInsights",
       schemaFields.stream().map(SchemaHelper::fromName).collect(Collectors.toList()));

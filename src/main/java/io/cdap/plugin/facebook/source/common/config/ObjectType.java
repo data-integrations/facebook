@@ -33,7 +33,7 @@ public enum ObjectType {
     this.stringValue = stringValue;
   }
 
-  static ObjectType fromString(String value) {
+  public static ObjectType fromString(String value) {
     return Arrays.stream(ObjectType.values())
       .filter(type -> type.stringValue.equals(value))
       .findFirst()

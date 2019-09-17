@@ -54,6 +54,11 @@ public class InsightsRequestWrapper implements InsightsRequest {
   }
 
   @Override
+  public void setActionBreakdowns(List<AdsInsights.EnumActionBreakdowns> breakdowns) {
+    setParam("action_breakdowns", breakdowns);
+  }
+
+  @Override
   public APINodeList<AdsInsights> execute() throws APIException {
     // every 'APINodeList<AdsInsights> execute()' is the same in requests, but not belongs to common interface
     // that forces us to do this ugly 'ifs' to not to repeat fields and other params setup for each of instance.
