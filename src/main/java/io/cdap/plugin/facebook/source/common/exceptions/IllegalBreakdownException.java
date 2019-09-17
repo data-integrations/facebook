@@ -20,14 +20,14 @@ package io.cdap.plugin.facebook.source.common.exceptions;
  * Indicates illegal breakdown in Facebook Insights API.
  */
 public class IllegalBreakdownException extends RuntimeException {
-  private String breakDownName;
+  private String breakDown;
 
-  public IllegalBreakdownException(String breakDownName) {
-    super(String.format("'%s' is not a valid breakdown to select", breakDownName));
-    this.breakDownName = breakDownName;
+  public IllegalBreakdownException(String breakDown) {
+    super(String.format("'%s' is not a valid breakdown combination", breakDown));
+    this.breakDown = breakDown;
   }
 
-  public String getBreakDownName() {
-    return breakDownName;
+  public String getBreakDown() {
+    return breakDown;
   }
 }

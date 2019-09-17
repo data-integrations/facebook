@@ -16,7 +16,6 @@
 
 package io.cdap.plugin.facebook.source.batch;
 
-import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,19 +24,17 @@ import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
 import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
-import io.cdap.plugin.facebook.source.common.BaseSourceConfig;
 import io.cdap.plugin.facebook.source.common.SchemaHelper;
+import io.cdap.plugin.facebook.source.common.config.BaseSourceConfig;
+import io.cdap.plugin.facebook.source.common.config.Breakdowns;
+import io.cdap.plugin.facebook.source.common.config.SourceConfigHelper;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalBreakdownException;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 
 /**
@@ -56,11 +53,8 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
    */
   public static final String FILTERING_DELIMITER = "%!delim@%";
   private static final Gson gson = new GsonBuilder().create();
-  private static final Pattern OPERATOR_FIELD_RE = Pattern.compile("([(A-Z_)]+)\\(([a-z\\d_]+)\\)");
 
   private transient Schema schema = null;
-  private transient List<Filter> filtersList = null;
-  private transient String parsedFiltering = null;
 
   @Name(PROPERTY_FIELDS)
   @Description("Fields to get.")
@@ -111,6 +105,7 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   Schema getSchema() {
     if (schema == null) {
+      // TODO fix this
       schema = SchemaHelper.buildSchema(getFields(), getBreakdowns());
     }
     return schema;
@@ -120,39 +115,24 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     return level;
   }
 
-  public List<AdsInsights.EnumBreakdowns> getBreakdowns() {
+  public Breakdowns getBreakdowns() {
     if (!Strings.isNullOrEmpty(breakdowns)) {
-      return Arrays.stream(breakdowns.split(","))
-        .map(FacebookBatchSourceConfig::toBreakdown)
-        .collect(Collectors.toList());
+      return SourceConfigHelper.parseBreakdowns(breakdowns);
     } else {
-      return Collections.emptyList();
+      return null;
     }
   }
 
   @Nullable
   public String getFiltering() {
-    if (!Strings.isNullOrEmpty(filtering) && parsedFiltering == null) {
-      filtersList = Arrays.stream(filtering.split(FILTERING_DELIMITER))
-        .map(FacebookBatchSourceConfig::parseFilteringItem)
-        .collect(Collectors.toList());
-      parsedFiltering = gson.toJson(filtersList);
-    }
-    return parsedFiltering;
-  }
-
-  private static Filter parseFilteringItem(String item) {
-    // filtering item will be in format 'some random text:OPERATOR(field)'
-    // everything after last ':' is the operator and field name and can't contain some special characters,
-    // parse separately and consider everything before as value.
-    int delimiter = item.lastIndexOf(':');
-    String operatorAndField = item.substring(delimiter + 1);
-    String value = item.substring(0, delimiter);
-    Matcher match = OPERATOR_FIELD_RE.matcher(operatorAndField);
-    if (match.matches()) {
-      return new Filter(match.group(2), match.group(1), value);
+    if (!Strings.isNullOrEmpty(filtering)) {
+      return gson.toJson(
+        Arrays.stream(filtering.split(FILTERING_DELIMITER))
+          .map(SourceConfigHelper::parseFilteringItem)
+          .collect(Collectors.toList())
+      );
     } else {
-      throw new IllegalArgumentException("Failed to parse filtering");
+      return null;
     }
   }
 
@@ -166,26 +146,26 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     return sorting;
   }
 
-  private static AdsInsights.EnumBreakdowns toBreakdown(String stringValue) {
-    return StreamSupport
-      .stream(Arrays.spliterator(AdsInsights.EnumBreakdowns.values()), false)
-      .filter(enumBreakdown -> Objects.equals(enumBreakdown.toString(), stringValue))
-      .findFirst()
-      .orElseThrow(() -> new IllegalBreakdownException(stringValue));
-  }
-
   @Override
   public void validate(FailureCollector failureCollector) {
     super.validate(failureCollector);
 
+    validateBreakdowns(failureCollector);
+    validateFields(failureCollector);
+    validateFiltering(failureCollector);
+  }
+
+  void validateBreakdowns(FailureCollector failureCollector) {
     try {
       getBreakdowns();
     } catch (IllegalBreakdownException ex) {
       failureCollector
         .addFailure(ex.getMessage(), "Remove invalid breakdowns.")
-        .withConfigElement(PROPERTY_BREAKDOWNS, ex.getBreakDownName());
+        .withConfigProperty(PROPERTY_BREAKDOWNS);
     }
+  }
 
+  void validateFields(FailureCollector failureCollector) {
     if (Strings.isNullOrEmpty(fields) && getFields().size() == 0) {
       failureCollector
         .addFailure("At least one field must be specified.", "Specify valid fields.")
@@ -201,35 +181,16 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
         }
       });
     }
+  }
 
+  void validateFiltering(FailureCollector failureCollector) {
     try {
-      if (!Strings.isNullOrEmpty(getFiltering())) {
-        filtersList.forEach(filter -> {
-          if (!getFields().contains(filter.field)) {
-            failureCollector.addFailure(
-              String.format("Invalid filter: field '%s' not specified in fields", filter.field),
-              String.format("Select field '%s'", filter.field))
-              .withConfigProperty(PROPERTY_FILTERING);
-          }
-        });
-      }
+      getFiltering();
     } catch (Exception ex) {
       // all kind of parsing exceptions
       failureCollector.addFailure("Failed to parse filtering:" + ex.getMessage(), null)
         .withStacktrace(ex.getStackTrace())
         .withConfigProperty(PROPERTY_FILTERING);
-    }
-  }
-
-  private static class Filter {
-    String field;
-    String operator;
-    String value;
-
-    Filter(String field, String operator, String value) {
-      this.field = field;
-      this.operator = operator;
-      this.value = value;
     }
   }
 }

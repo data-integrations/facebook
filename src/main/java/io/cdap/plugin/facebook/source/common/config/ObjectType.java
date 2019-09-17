@@ -14,7 +14,7 @@
  * the License.
  */
 
-package io.cdap.plugin.facebook.source.common;
+package io.cdap.plugin.facebook.source.common.config;
 
 import java.util.Arrays;
 

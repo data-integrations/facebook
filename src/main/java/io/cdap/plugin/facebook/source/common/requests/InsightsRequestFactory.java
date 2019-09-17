@@ -21,8 +21,8 @@ import com.facebook.ads.sdk.Ad;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdSet;
 import com.facebook.ads.sdk.Campaign;
-import io.cdap.plugin.facebook.source.common.BaseSourceConfig;
-import io.cdap.plugin.facebook.source.common.ObjectType;
+import io.cdap.plugin.facebook.source.common.config.BaseSourceConfig;
+import io.cdap.plugin.facebook.source.common.config.ObjectType;
 
 /**
  * Creates request based on source configuration.

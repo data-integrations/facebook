@@ -14,7 +14,7 @@
  * the License.
  */
 
-package io.cdap.plugin.facebook.source.common;
+package io.cdap.plugin.facebook.source.common.config;
 
 import com.google.common.base.Strings;
 import io.cdap.cdap.api.annotation.Description;

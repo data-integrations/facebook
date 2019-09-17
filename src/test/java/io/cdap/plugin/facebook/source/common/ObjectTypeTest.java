@@ -16,6 +16,7 @@
 
 package io.cdap.plugin.facebook.source.common;
 
+import io.cdap.plugin.facebook.source.common.config.ObjectType;
 import org.junit.Assert;
 import org.junit.Test;
 

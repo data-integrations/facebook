@@ -16,10 +16,10 @@
 
 package io.cdap.plugin.facebook.source.common;
 
-import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import io.cdap.cdap.api.data.schema.Schema;
+import io.cdap.plugin.facebook.source.common.config.Breakdowns;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.List;
@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
  * Helper class to map Facebook Insights fields sets to final {@link Schema}.
  */
 public class SchemaHelper {
-  public static Schema buildSchema(List<String> fields, List<AdsInsights.EnumBreakdowns> breakdowns) {
+  public static Schema buildSchema(List<String> fields, Breakdowns breakdowns) {
     Set<String> schemaFields = Sets.newHashSet(fields);
-    breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
+//    breakdowns.forEach(breakdown -> schemaFields.add(breakdown.toString()));
     return Schema.recordOf(
       "FacebookAdsInsights",
       schemaFields.stream().map(SchemaHelper::fromName).collect(Collectors.toList()));
