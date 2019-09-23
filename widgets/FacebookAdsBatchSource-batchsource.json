@@ -22,11 +22,6 @@
       "label": "Object query parameters",
       "properties": [
         {
-          "name": "objectId",
-          "label": "Object Id",
-          "widget-type": "textbox"
-        },
-        {
           "name": "objectType",
           "label": "Object Type",
           "widget-type": "select",
@@ -39,6 +34,26 @@
               "Account"
             ]
           }
+        },
+        {
+          "name": "adId",
+          "label": "Ad Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "adSetId",
+          "label": "Ad Set Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "campaignId",
+          "label": "Campaign Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "accountId",
+          "label": "Account Id",
+          "widget-type": "textbox"
         },
         {
           "label": "Level",
@@ -197,6 +212,56 @@
       "widget-type": "non-editable-schema-editor",
       "schema": {
       }
+    }
+  ],
+  "filters": [
+    {
+      "name": "Campaign Id",
+      "condition": {
+        "expression": "objectType == 'Campaign'"
+      },
+      "show": [
+        {
+          "name": "campaignId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Ad Id",
+      "condition": {
+        "expression": "objectType == 'Ad'"
+      },
+      "show": [
+        {
+          "name": "adId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Ad Set Id",
+      "condition": {
+        "expression": "objectType == 'Ad Set'"
+      },
+      "show": [
+        {
+          "name": "adSetId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Account Id",
+      "condition": {
+        "expression": "objectType == 'Account'"
+      },
+      "show": [
+        {
+          "name": "accountId",
+          "type": "property"
+        }
+      ]
     }
   ]
 }

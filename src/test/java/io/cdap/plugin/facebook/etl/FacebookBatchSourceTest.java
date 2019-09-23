@@ -157,7 +157,7 @@ public class FacebookBatchSourceTest extends HydratorTestBase {
         .put("referenceName", "ref")
         .put("accessToken", accessToken)
         .put("objectType", "Campaign")
-        .put("objectId", campaign.getId())
+        .put("campaignId", campaign.getId())
         .put("level", "adset")
         .put("fields", "impressions,campaign_id,adset_id,adset_name")
         .build(),
