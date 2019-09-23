@@ -63,23 +63,25 @@ public class BaseSourceConfig extends ReferencePluginConfig {
   }
 
   public void validate(FailureCollector failureCollector) {
-    if (Strings.isNullOrEmpty(accessToken)) {
+    if (!containsMacro(PROPERTY_ACCESS_TOKEN) && Strings.isNullOrEmpty(accessToken)) {
       failureCollector
         .addFailure("accessToken must be not empty.", "Enter valid access token.")
         .withConfigProperty(PROPERTY_ACCESS_TOKEN);
     }
 
-    try {
-      getObjectType();
-    } catch (IllegalArgumentException ex) {
-      failureCollector
-        .addFailure(
-          ex.getMessage(),
-          "Choose one of 'Campaign', 'Ad', 'Ad Set' or 'Account'.")
-        .withConfigProperty(PROPERTY_OBJECT_TYPE);
+    if (!containsMacro(PROPERTY_OBJECT_TYPE)) {
+      try {
+        getObjectType();
+      } catch (IllegalArgumentException ex) {
+        failureCollector
+          .addFailure(
+            ex.getMessage(),
+            "Choose one of 'Campaign', 'Ad', 'Ad Set' or 'Account'.")
+          .withConfigProperty(PROPERTY_OBJECT_TYPE);
+      }
     }
 
-    if (Strings.isNullOrEmpty(objectId)) {
+    if (!containsMacro(PROPERTY_OBJECT_ID) && Strings.isNullOrEmpty(objectId)) {
       failureCollector
         .addFailure("objectId must be not empty.", "Enter valid object id.")
         .withConfigProperty(PROPERTY_OBJECT_ID);

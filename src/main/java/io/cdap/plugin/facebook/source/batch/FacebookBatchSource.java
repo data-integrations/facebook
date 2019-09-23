@@ -54,14 +54,13 @@ public class FacebookBatchSource extends BatchSource<NullWritable, AdsInsights, 
 
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
-    FailureCollector failureCollector = pipelineConfigurer.getStageConfigurer().getFailureCollector();
-    config.validate(failureCollector);
-    failureCollector.getOrThrowException();
+    validateConfiguration(pipelineConfigurer.getStageConfigurer().getFailureCollector());
     pipelineConfigurer.getStageConfigurer().setOutputSchema(config.getSchema());
   }
 
   @Override
-  public void prepareRun(BatchSourceContext batchSourceContext) throws Exception {
+  public void prepareRun(BatchSourceContext batchSourceContext) {
+    validateConfiguration(batchSourceContext.getFailureCollector());
     LineageRecorder lineageRecorder = new LineageRecorder(batchSourceContext, config.referenceName);
     lineageRecorder.createExternalDataset(config.getSchema());
     lineageRecorder.recordRead("Read", "Reading Facebook Insights",
@@ -75,5 +74,10 @@ public class FacebookBatchSource extends BatchSource<NullWritable, AdsInsights, 
   @Override
   public void transform(KeyValue<NullWritable, AdsInsights> input, Emitter<StructuredRecord> emitter) {
     emitter.emit(AdsInsightsTransformer.transform(input.getValue(), config.getSchema()));
+  }
+
+  private void validateConfiguration(FailureCollector failureCollector) {
+    config.validate(failureCollector);
+    failureCollector.getOrThrowException();
   }
 }

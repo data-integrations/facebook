@@ -151,8 +151,8 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   public List<Filter> getFilters() {
     if (!Strings.isNullOrEmpty(filtering)) {
       return Arrays.stream(filtering.split(FILTERING_DELIMITER))
-          .map(SourceConfigHelper::parseFilteringItem)
-          .collect(Collectors.toList());
+        .map(SourceConfigHelper::parseFilteringItem)
+        .collect(Collectors.toList());
     } else {
       return null;
     }
@@ -178,41 +178,47 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   }
 
   void validateBreakdowns(FailureCollector failureCollector) {
-    try {
-      getBreakdown();
-    } catch (IllegalBreakdownException ex) {
-      failureCollector
-        .addFailure(ex.getMessage(), "Fix invalid breakdown value.")
-        .withConfigProperty(PROPERTY_BREAKDOWN);
+    if (!containsMacro(PROPERTY_BREAKDOWN)) {
+      try {
+        getBreakdown();
+      } catch (IllegalBreakdownException ex) {
+        failureCollector
+          .addFailure(ex.getMessage(), "Fix invalid breakdown value.")
+          .withConfigProperty(PROPERTY_BREAKDOWN);
+      }
     }
   }
 
   void validateFields(FailureCollector failureCollector) {
-    if (Strings.isNullOrEmpty(fields) && getFields().size() == 0) {
-      failureCollector
-        .addFailure("At least one field must be specified.", "Specify valid fields.")
-        .withConfigProperty(PROPERTY_FIELDS);
-    } else {
-      getFields().forEach(field -> {
-        try {
-          SchemaHelper.fromName(field);
-        } catch (IllegalInsightsFieldException ex) {
-          failureCollector
-            .addFailure("Invalid field:" + ex.getFieldName(), "Remove invalid field.")
-            .withConfigElement(PROPERTY_FIELDS, ex.getFieldName());
-        }
-      });
+    if (!containsMacro(PROPERTY_FIELDS)) {
+      if (Strings.isNullOrEmpty(fields) && getFields().size() == 0) {
+        failureCollector
+          .addFailure("At least one field must be specified.", "Specify valid fields.")
+          .withConfigProperty(PROPERTY_FIELDS);
+      } else {
+        getFields().forEach(field -> {
+          try {
+            SchemaHelper.fromName(field);
+          } catch (IllegalInsightsFieldException ex) {
+            failureCollector
+              .addFailure("Invalid field:" + ex.getFieldName(), "Remove invalid field.")
+              .withConfigElement(PROPERTY_FIELDS, ex.getFieldName());
+          }
+        });
+      }
     }
   }
 
   void validateFiltering(FailureCollector failureCollector) {
-    try {
-      getFiltering();
-    } catch (Exception ex) {
-      // all kind of parsing exceptions
-      failureCollector.addFailure("Failed to parse filtering:" + ex.getMessage(), null)
-        .withStacktrace(ex.getStackTrace())
-        .withConfigProperty(PROPERTY_FILTERING);
+    if (!containsMacro(PROPERTY_FILTERING)) {
+      try {
+        getFiltering();
+      } catch (Exception ex) {
+        // all kind of parsing exceptions
+        failureCollector.addFailure("Failed to parse filtering:" + ex.getMessage(), null)
+          .withStacktrace(ex.getStackTrace())
+          .withConfigProperty(PROPERTY_FILTERING);
+      }
     }
   }
 }
