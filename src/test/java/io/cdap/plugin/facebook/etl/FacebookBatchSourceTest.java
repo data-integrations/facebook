@@ -50,7 +50,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -143,7 +142,7 @@ public class FacebookBatchSourceTest extends HydratorTestBase {
   public void testBatchSource() throws Exception {
     String campaignName = "CDAP-test-campaign-" + UUID.randomUUID().toString();
     String adSet1Name = "CDAP-ad-set-1-" + UUID.randomUUID().toString();
-    String adSet2Name = "CDAP-ad-set-2" + UUID.randomUUID().toString();
+    String adSet2Name = "CDAP-ad-set-2-" + UUID.randomUUID().toString();
 
     Campaign campaign = createCampaign(campaignName);
 
@@ -159,6 +158,8 @@ public class FacebookBatchSourceTest extends HydratorTestBase {
         .put("objectType", "Campaign")
         .put("campaignId", campaign.getId())
         .put("level", "adset")
+        .put("sorting", "adset_name")
+        .put("sortDirection", "ascending")
         .put("fields", "impressions,campaign_id,adset_id,adset_name")
         .build(),
       null)
@@ -182,11 +183,7 @@ public class FacebookBatchSourceTest extends HydratorTestBase {
 
     Assert.assertEquals(2, outputRecords.size());
 
-    Assert.assertNotNull(outputRecords.get(0).get("adset_name"));
-    Assert.assertNotNull(outputRecords.get(1).get("adset_name"));
-    // ensure records in predictable order
-    outputRecords.sort(Comparator.comparing(structuredRecord -> structuredRecord.get("adset_name")));
-
+    // sorting is ascending by ad set name, so records ordering must be okay
     Assert.assertEquals(adSet1Name, outputRecords.get(0).get("adset_name"));
     Assert.assertEquals(adSet2Name, outputRecords.get(1).get("adset_name"));
   }

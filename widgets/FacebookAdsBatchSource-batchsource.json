@@ -162,6 +162,25 @@
           "name": "sorting",
           "label": "Sorting",
           "widget-type": "textbox"
+        },
+        {
+          "name": "sortDirection",
+          "label": "Sort Direction",
+          "widget-type": "radio-group",
+          "widget-attributes": {
+            "layout": "inline",
+            "default": "ascending",
+            "options": [
+              {
+                "id": "ascending",
+                "label": "Ascending"
+              },
+              {
+                "id": "descending",
+                "label": "Descending"
+              }
+            ]
+          }
         }
       ]
     },

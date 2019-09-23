@@ -46,6 +46,13 @@ public class FacebookBatchSourceConfigTest {
       result.fields = fields;
       return result;
     }
+
+    static FacebookBatchSourceConfig withSorting(String sorting, String direction) {
+      FacebookBatchSourceConfigBuilder result = new FacebookBatchSourceConfigBuilder();
+      result.sorting = sorting;
+      result.sortDirection = direction;
+      return result;
+    }
   }
 
   @Test
@@ -117,6 +124,33 @@ public class FacebookBatchSourceConfigTest {
   public void testValidateFilteringInvalidFormat() {
     MockFailureCollector failureCollector = new MockFailureCollector();
     FacebookBatchSourceConfigBuilder.withFiltering("valueEQUALS(field").validateFiltering(failureCollector);
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+  }
+
+  @Test
+  public void testSorting() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withSorting("field", "descending");
+    config.validateSorting(failureCollector);
+
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+    Assert.assertEquals("field_descending", config.getSorting());
+  }
+
+  @Test
+  public void testSortingEmptyField() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withSorting(null, "descending");
+    config.validateSorting(failureCollector);
+
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+    Assert.assertNull(config.getSorting());
+  }
+
+  @Test
+  public void testSortingInvalidDirection() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    FacebookBatchSourceConfigBuilder.withSorting("field", "nowhere").validateSorting(failureCollector);
     Assert.assertEquals(1, failureCollector.getValidationFailures().size());
   }
 }

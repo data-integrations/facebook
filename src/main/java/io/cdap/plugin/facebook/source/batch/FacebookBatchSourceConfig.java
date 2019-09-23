@@ -51,6 +51,8 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   public static final String PROPERTY_FILTERING = "filtering";
   public static final String PROPERTY_TIME_RANGES = "timeRanges";
   public static final String PROPERTY_SORTING = "sorting";
+  public static final String PROPERTY_SORT_DIRECTION = "sortDirection";
+
   /*
   Most likely unique delimiter that helps avoid problems with unescaped symbols in complex filters
    */
@@ -95,10 +97,16 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   protected String timeRanges;
 
   @Name(PROPERTY_SORTING)
-  @Description("Sorting definitions.")
+  @Description("Field name to sort results by.")
   @Nullable
   @Macro
   protected String sorting;
+
+  @Name(PROPERTY_SORT_DIRECTION)
+  @Description("Sort direction.")
+  @Nullable
+  @Macro
+  protected String sortDirection;
 
   public FacebookBatchSourceConfig(String referenceName) {
     super(referenceName);
@@ -165,7 +173,11 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
 
   @Nullable
   public String getSorting() {
-    return sorting;
+    if (!Strings.isNullOrEmpty(sorting) && !Strings.isNullOrEmpty(sortDirection)) {
+      return sorting + "_" + sortDirection;
+    } else {
+      return null;
+    }
   }
 
   @Override
@@ -175,6 +187,7 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     validateBreakdowns(failureCollector);
     validateFields(failureCollector);
     validateFiltering(failureCollector);
+    validateSorting(failureCollector);
   }
 
   void validateBreakdowns(FailureCollector failureCollector) {
@@ -218,6 +231,21 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
         failureCollector.addFailure("Failed to parse filtering:" + ex.getMessage(), null)
           .withStacktrace(ex.getStackTrace())
           .withConfigProperty(PROPERTY_FILTERING);
+      }
+    }
+  }
+
+  void validateSorting(FailureCollector failureCollector) {
+    if (!containsMacro(PROPERTY_SORTING)
+      && !containsMacro(PROPERTY_SORT_DIRECTION)
+      && !Strings.isNullOrEmpty(sorting)) {
+      // check is direction one of "ascending" or "descending"
+      if (!("ascending".equals(sortDirection) || "descending".equals(sortDirection))) {
+        failureCollector
+          .addFailure(
+            String.format("'%s' is invalid sorting direction", sortDirection),
+            "Set sorting direction to 'ascending' or 'descending'")
+          .withConfigProperty(PROPERTY_FIELDS);
       }
     }
   }
