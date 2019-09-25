@@ -21,8 +21,6 @@ import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdsInsights;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.cdap.plugin.facebook.source.common.SchemaHelper;
-import io.cdap.plugin.facebook.source.common.config.Breakdowns;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequest;
 import io.cdap.plugin.facebook.source.common.requests.InsightsRequestFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -33,8 +31,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * RecordReader implementation, which reads {@link AdsInsights} instances from Facebook Insights using
@@ -54,35 +50,14 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
 
     try {
       InsightsRequest request = InsightsRequestFactory.createRequest(fbConfig);
-      List<String> fieldsToQuery = fbConfig.getFields()
-        .stream()
-        .filter(SchemaHelper::isValidForFieldsParameter)
-        .collect(Collectors.toList());
-      fieldsToQuery.forEach(request::requestField);
 
-      Breakdowns breakdowns = fbConfig.getBreakdown();
-
-      if (breakdowns != null) {
-        if (!breakdowns.getBreakdowns().isEmpty()) {
-          request.setBreakdowns(breakdowns.getBreakdowns());
-        }
-        if (!breakdowns.getActionBreakdowns().isEmpty()) {
-          request.setActionBreakdowns(breakdowns.getActionBreakdowns());
-        }
-      }
-
-      if (fbConfig.getFiltering() != null) {
-        request.setParam("filtering", fbConfig.getFiltering());
-      }
       if (fbConfig.getSorting() != null) {
         request.setParam("sort", fbConfig.getSorting());
       }
       if (fbConfig.getTimeRanges() != null) {
         request.setParam("time_ranges", fbConfig.getTimeRanges());
       }
-      if (!"default".equals(fbConfig.getLevel())) {
-        request.setParam("level", fbConfig.getLevel());
-      }
+
       currentPage = request.execute();
       currentPageIterator = currentPage.iterator();
     } catch (APIException e) {

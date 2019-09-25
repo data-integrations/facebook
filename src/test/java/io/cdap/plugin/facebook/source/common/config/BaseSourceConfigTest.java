@@ -37,6 +37,18 @@ public class BaseSourceConfigTest {
       result.objectType = objectType;
       return result;
     }
+
+    static BaseSourceConfig withFiltering(String filtering) {
+      BaseSourceConfigBuilder result = new BaseSourceConfigBuilder();
+      result.filtering = filtering;
+      return result;
+    }
+
+    static BaseSourceConfig withFields(String fields) {
+      BaseSourceConfigBuilder result = new BaseSourceConfigBuilder();
+      result.fields = fields;
+      return result;
+    }
   }
 
   @Test
@@ -56,5 +68,57 @@ public class BaseSourceConfigTest {
 
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
     Assert.assertEquals("adId", config.getObjectId());
+  }
+
+  @Test
+  public void testValidateFields() {
+    BaseSourceConfig config = BaseSourceConfigBuilder.withFields("date_start,impressions");
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    config.validateFields(failureCollector);
+
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+  }
+
+  @Test
+  public void testValidateFieldsInvalidField() {
+    BaseSourceConfig config = BaseSourceConfigBuilder.withFields("date_start,impressions,invalid");
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    config.validateFields(failureCollector);
+
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+  }
+
+
+  @Test
+  public void testValidateFiltering() {
+    BaseSourceConfig config = BaseSourceConfigBuilder.withFiltering(
+      "value:EQUAL(field)" + BaseSourceConfigBuilder.FILTERING_DELIMITER + "value2:EQUAL(field2)");
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    config.validateFiltering(failureCollector);
+
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+    Assert.assertEquals(2, config.getFilters().size());
+  }
+
+  @Test
+  public void testValidateFilteringEmptyOrNull() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    BaseSourceConfigBuilder.withFiltering("").validateFiltering(failureCollector);
+    BaseSourceConfigBuilder.withFiltering(null).validateFiltering(failureCollector);
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+  }
+
+  @Test
+  public void testValidateFilteringInvalidOp() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    BaseSourceConfigBuilder.withFiltering("value:INVALID(field)").validateFiltering(failureCollector);
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+  }
+
+  @Test
+  public void testValidateFilteringInvalidFormat() {
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    BaseSourceConfigBuilder.withFiltering("valueEQUALS(field").validateFiltering(failureCollector);
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
   }
 }

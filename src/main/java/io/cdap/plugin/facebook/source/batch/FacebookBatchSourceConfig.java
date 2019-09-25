@@ -18,59 +18,26 @@ package io.cdap.plugin.facebook.source.batch;
 
 import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
-import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
-import io.cdap.plugin.facebook.source.common.SchemaHelper;
 import io.cdap.plugin.facebook.source.common.config.BaseSourceConfig;
 import io.cdap.plugin.facebook.source.common.config.Breakdowns;
-import io.cdap.plugin.facebook.source.common.config.Filter;
 import io.cdap.plugin.facebook.source.common.config.SourceConfigHelper;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalBreakdownException;
-import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
  * Provides all required configuration for reading Facebook Insights.
  */
 public class FacebookBatchSourceConfig extends BaseSourceConfig {
-
-  public static final String PROPERTY_FIELDS = "fields";
-  public static final String PROPERTY_LEVEL = "level";
   public static final String PROPERTY_BREAKDOWN = "breakdown";
   public static final String PROPERTY_ADDITIONAL_BREAKDOWN = "additionalBreakdown";
-  public static final String PROPERTY_FILTERING = "filtering";
   public static final String PROPERTY_TIME_RANGES = "timeRanges";
   public static final String PROPERTY_SORTING = "sorting";
   public static final String PROPERTY_SORT_DIRECTION = "sortDirection";
-
-  /*
-  Most likely unique delimiter that helps avoid problems with unescaped symbols in complex filters
-   */
-  public static final String FILTERING_DELIMITER = "%!delim@%";
-  private static final Gson gson = new GsonBuilder().create();
-
-  private transient Schema schema = null;
-
-  @Name(PROPERTY_FIELDS)
-  @Description("Fields to get.")
-  @Macro
-  protected String fields;
-
-  @Name(PROPERTY_LEVEL)
-  @Description("Level of request.")
-  @Macro
-  protected String level;
-
 
   @Name(PROPERTY_BREAKDOWN)
   @Description("Primary breakdown.")
@@ -83,12 +50,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   @Nullable
   @Macro
   protected String additionalBreakdown;
-
-  @Name(PROPERTY_FILTERING)
-  @Description("Filters to query with.")
-  @Nullable
-  @Macro
-  protected String filtering;
 
   @Name(PROPERTY_TIME_RANGES)
   @Description("Time ranges.")
@@ -112,25 +73,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     super(referenceName);
   }
 
-  List<String> getFields() {
-    if (!Strings.isNullOrEmpty(fields)) {
-      return Arrays.asList(fields.split(","));
-    } else {
-      return Collections.emptyList();
-    }
-  }
-
-  Schema getSchema() {
-    if (schema == null) {
-      schema = SchemaHelper.buildSchema(getFields(), getBreakdown());
-    }
-    return schema;
-  }
-
-  public String getLevel() {
-    return level;
-  }
-
   public Breakdowns getBreakdown() {
     if (!Strings.isNullOrEmpty(breakdown) && !"none".equals(breakdown)) {
       Breakdowns result = SourceConfigHelper.parseBreakdowns(breakdown);
@@ -147,24 +89,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     }
   }
 
-  @Nullable
-  public String getFiltering() {
-    if (!Strings.isNullOrEmpty(filtering)) {
-      return gson.toJson(getFilters());
-    } else {
-      return null;
-    }
-  }
-
-  public List<Filter> getFilters() {
-    if (!Strings.isNullOrEmpty(filtering)) {
-      return Arrays.stream(filtering.split(FILTERING_DELIMITER))
-        .map(SourceConfigHelper::parseFilteringItem)
-        .collect(Collectors.toList());
-    } else {
-      return null;
-    }
-  }
 
   @Nullable
   public String getTimeRanges() {
@@ -185,8 +109,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     super.validate(failureCollector);
 
     validateBreakdowns(failureCollector);
-    validateFields(failureCollector);
-    validateFiltering(failureCollector);
     validateSorting(failureCollector);
   }
 
@@ -198,39 +120,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
         failureCollector
           .addFailure(ex.getMessage(), "Fix invalid breakdown value.")
           .withConfigProperty(PROPERTY_BREAKDOWN);
-      }
-    }
-  }
-
-  void validateFields(FailureCollector failureCollector) {
-    if (!containsMacro(PROPERTY_FIELDS)) {
-      if (Strings.isNullOrEmpty(fields) && getFields().size() == 0) {
-        failureCollector
-          .addFailure("At least one field must be specified.", "Specify valid fields.")
-          .withConfigProperty(PROPERTY_FIELDS);
-      } else {
-        getFields().forEach(field -> {
-          try {
-            SchemaHelper.fromName(field);
-          } catch (IllegalInsightsFieldException ex) {
-            failureCollector
-              .addFailure("Invalid field:" + ex.getFieldName(), "Remove invalid field.")
-              .withConfigElement(PROPERTY_FIELDS, ex.getFieldName());
-          }
-        });
-      }
-    }
-  }
-
-  void validateFiltering(FailureCollector failureCollector) {
-    if (!containsMacro(PROPERTY_FILTERING)) {
-      try {
-        getFiltering();
-      } catch (Exception ex) {
-        // all kind of parsing exceptions
-        failureCollector.addFailure("Failed to parse filtering:" + ex.getMessage(), null)
-          .withStacktrace(ex.getStackTrace())
-          .withConfigProperty(PROPERTY_FILTERING);
       }
     }
   }

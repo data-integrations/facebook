@@ -30,6 +30,7 @@ import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.batch.BatchSource;
 import io.cdap.cdap.etl.api.batch.BatchSourceContext;
+import io.cdap.plugin.common.IdUtils;
 import io.cdap.plugin.common.LineageRecorder;
 import io.cdap.plugin.facebook.source.common.AdsInsightsTransformer;
 import org.apache.hadoop.io.NullWritable;
@@ -54,6 +55,7 @@ public class FacebookBatchSource extends BatchSource<NullWritable, AdsInsights, 
 
   @Override
   public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
+    IdUtils.validateId(config.referenceName);
     validateConfiguration(pipelineConfigurer.getStageConfigurer().getFailureCollector());
     pipelineConfigurer.getStageConfigurer().setOutputSchema(config.getSchema());
   }

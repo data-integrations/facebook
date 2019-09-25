@@ -21,8 +21,13 @@ import com.facebook.ads.sdk.Ad;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdSet;
 import com.facebook.ads.sdk.Campaign;
+import io.cdap.plugin.facebook.source.common.SchemaHelper;
 import io.cdap.plugin.facebook.source.common.config.BaseSourceConfig;
+import io.cdap.plugin.facebook.source.common.config.Breakdowns;
 import io.cdap.plugin.facebook.source.common.config.ObjectType;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Creates request based on source configuration.
@@ -48,6 +53,32 @@ public class InsightsRequestFactory {
    * Creates insights request.
    */
   public static InsightsRequest createRequest(BaseSourceConfig config) {
-    return createRequest(config.getObjectType(), config.getObjectId(), config.getAccessToken());
+    InsightsRequest request = createRequest(config.getObjectType(), config.getObjectId(), config.getAccessToken());
+    List<String> fieldsToQuery = config.getFields()
+      .stream()
+      .filter(SchemaHelper::isValidForFieldsParameter)
+      .collect(Collectors.toList());
+    fieldsToQuery.forEach(request::requestField);
+
+    Breakdowns breakdowns = config.getBreakdown();
+
+    if (breakdowns != null) {
+      if (!breakdowns.getBreakdowns().isEmpty()) {
+        request.setBreakdowns(breakdowns.getBreakdowns());
+      }
+      if (!breakdowns.getActionBreakdowns().isEmpty()) {
+        request.setActionBreakdowns(breakdowns.getActionBreakdowns());
+      }
+    }
+
+    if (config.getFiltering() != null) {
+      request.setParam("filtering", config.getFiltering());
+    }
+
+    if (!"default".equals(config.getLevel())) {
+      request.setParam("level", config.getLevel());
+    }
+
+    return request;
   }
 }
