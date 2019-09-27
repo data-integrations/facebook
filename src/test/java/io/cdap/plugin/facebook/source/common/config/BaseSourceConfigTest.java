@@ -16,20 +16,21 @@
 
 package io.cdap.plugin.facebook.source.common.config;
 
+import com.facebook.ads.sdk.AdsInsights;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class BaseSourceConfigTest {
-  static class BaseSourceConfigBuilder extends BaseSourceConfig {
+  static class BaseSourceConfigMock extends BaseSourceConfig {
 
-    BaseSourceConfigBuilder() {
+    BaseSourceConfigMock() {
       super("ref");
     }
 
     static BaseSourceConfig withIdsAndType(String adId, String adSetId, String accountId, String campaignId,
                                            String objectType) {
-      BaseSourceConfig result = new BaseSourceConfigBuilder();
+      BaseSourceConfig result = new BaseSourceConfigMock();
       result.adId = adId;
       result.adSetId = adSetId;
       result.accountId = accountId;
@@ -39,21 +40,27 @@ public class BaseSourceConfigTest {
     }
 
     static BaseSourceConfig withFiltering(String filtering) {
-      BaseSourceConfigBuilder result = new BaseSourceConfigBuilder();
+      BaseSourceConfigMock result = new BaseSourceConfigMock();
       result.filtering = filtering;
       return result;
     }
 
     static BaseSourceConfig withFields(String fields) {
-      BaseSourceConfigBuilder result = new BaseSourceConfigBuilder();
+      BaseSourceConfigMock result = new BaseSourceConfigMock();
       result.fields = fields;
+      return result;
+    }
+
+    static BaseSourceConfig withBreakdown(String breakdown) {
+      BaseSourceConfigMock result = new BaseSourceConfigMock();
+      result.breakdown = breakdown;
       return result;
     }
   }
 
   @Test
   public void testValidateObjectIdEmptyId() {
-    BaseSourceConfig config = BaseSourceConfigBuilder.withIdsAndType("", "", "", "", "Ad");
+    BaseSourceConfig config = BaseSourceConfigMock.withIdsAndType("", "", "", "", "Ad");
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateObjectId(failureCollector);
 
@@ -62,7 +69,7 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateObjectId() {
-    BaseSourceConfig config = BaseSourceConfigBuilder.withIdsAndType("adId", "", "", "", "Ad");
+    BaseSourceConfig config = BaseSourceConfigMock.withIdsAndType("adId", "", "", "", "Ad");
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateObjectId(failureCollector);
 
@@ -72,7 +79,7 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateFields() {
-    BaseSourceConfig config = BaseSourceConfigBuilder.withFields("date_start,impressions");
+    BaseSourceConfig config = BaseSourceConfigMock.withFields("date_start,impressions");
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFields(failureCollector);
 
@@ -81,7 +88,7 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateFieldsInvalidField() {
-    BaseSourceConfig config = BaseSourceConfigBuilder.withFields("date_start,impressions,invalid");
+    BaseSourceConfig config = BaseSourceConfigMock.withFields("date_start,impressions,invalid");
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFields(failureCollector);
 
@@ -91,8 +98,8 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateFiltering() {
-    BaseSourceConfig config = BaseSourceConfigBuilder.withFiltering(
-      "value:EQUAL(field)" + BaseSourceConfigBuilder.FILTERING_DELIMITER + "value2:EQUAL(field2)");
+    BaseSourceConfig config = BaseSourceConfigMock.withFiltering(
+      "value:EQUAL(field)" + BaseSourceConfigMock.FILTERING_DELIMITER + "value2:EQUAL(field2)");
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFiltering(failureCollector);
 
@@ -103,22 +110,42 @@ public class BaseSourceConfigTest {
   @Test
   public void testValidateFilteringEmptyOrNull() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigBuilder.withFiltering("").validateFiltering(failureCollector);
-    BaseSourceConfigBuilder.withFiltering(null).validateFiltering(failureCollector);
+    BaseSourceConfigMock.withFiltering("").validateFiltering(failureCollector);
+    BaseSourceConfigMock.withFiltering(null).validateFiltering(failureCollector);
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
   }
 
   @Test
   public void testValidateFilteringInvalidOp() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigBuilder.withFiltering("value:INVALID(field)").validateFiltering(failureCollector);
+    BaseSourceConfigMock.withFiltering("value:INVALID(field)").validateFiltering(failureCollector);
     Assert.assertEquals(1, failureCollector.getValidationFailures().size());
   }
 
   @Test
   public void testValidateFilteringInvalidFormat() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigBuilder.withFiltering("valueEQUALS(field").validateFiltering(failureCollector);
+    BaseSourceConfigMock.withFiltering("valueEQUALS(field").validateFiltering(failureCollector);
+    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+  }
+
+  @Test
+  public void testValidateBreakdown() {
+    BaseSourceConfig config = BaseSourceConfigMock.withBreakdown("age, gender *");
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    config.validateBreakdowns(failureCollector);
+
+    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
+    Assert.assertTrue(config.getBreakdown().getBreakdowns().contains(AdsInsights.EnumBreakdowns.VALUE_AGE));
+    Assert.assertTrue(config.getBreakdown().getBreakdowns().contains(AdsInsights.EnumBreakdowns.VALUE_GENDER));
+  }
+
+  @Test
+  public void testValidateBreakdownInvalid() {
+    BaseSourceConfig config = BaseSourceConfigMock.withBreakdown("age, gender, invalid *");
+    MockFailureCollector failureCollector = new MockFailureCollector();
+    config.validateBreakdowns(failureCollector);
+
     Assert.assertEquals(1, failureCollector.getValidationFailures().size());
   }
 }

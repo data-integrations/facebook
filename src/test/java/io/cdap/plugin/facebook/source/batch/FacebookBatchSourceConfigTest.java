@@ -16,27 +16,20 @@
 
 package io.cdap.plugin.facebook.source.batch;
 
-import com.facebook.ads.sdk.AdsInsights;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class FacebookBatchSourceConfigTest {
 
-  static class FacebookBatchSourceConfigBuilder extends FacebookBatchSourceConfig {
+  static class FacebookBatchSourceConfigMock extends FacebookBatchSourceConfig {
 
-    FacebookBatchSourceConfigBuilder() {
+    FacebookBatchSourceConfigMock() {
       super("ref");
     }
 
-    static FacebookBatchSourceConfig withBreakdown(String breakdown) {
-      FacebookBatchSourceConfigBuilder result = new FacebookBatchSourceConfigBuilder();
-      result.breakdown = breakdown;
-      return result;
-    }
-
     static FacebookBatchSourceConfig withSorting(String sorting, String direction) {
-      FacebookBatchSourceConfigBuilder result = new FacebookBatchSourceConfigBuilder();
+      FacebookBatchSourceConfigMock result = new FacebookBatchSourceConfigMock();
       result.sorting = sorting;
       result.sortDirection = direction;
       return result;
@@ -44,29 +37,9 @@ public class FacebookBatchSourceConfigTest {
   }
 
   @Test
-  public void testValidateBreakdown() {
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withBreakdown("age, gender *");
-    MockFailureCollector failureCollector = new MockFailureCollector();
-    config.validateBreakdowns(failureCollector);
-
-    Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
-    Assert.assertTrue(config.getBreakdown().getBreakdowns().contains(AdsInsights.EnumBreakdowns.VALUE_AGE));
-    Assert.assertTrue(config.getBreakdown().getBreakdowns().contains(AdsInsights.EnumBreakdowns.VALUE_GENDER));
-  }
-
-  @Test
-  public void testValidateBreakdownInvalid() {
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withBreakdown("age, gender, invalid *");
-    MockFailureCollector failureCollector = new MockFailureCollector();
-    config.validateBreakdowns(failureCollector);
-
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
-  }
-
-  @Test
   public void testSorting() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withSorting("field", "descending");
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfigMock.withSorting("field", "descending");
     config.validateSorting(failureCollector);
 
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
@@ -76,7 +49,7 @@ public class FacebookBatchSourceConfigTest {
   @Test
   public void testSortingEmptyField() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigBuilder.withSorting(null, "descending");
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfigMock.withSorting(null, "descending");
     config.validateSorting(failureCollector);
 
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
@@ -86,7 +59,7 @@ public class FacebookBatchSourceConfigTest {
   @Test
   public void testSortingInvalidDirection() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfigBuilder.withSorting("field", "nowhere").validateSorting(failureCollector);
+    FacebookBatchSourceConfigMock.withSorting("field", "nowhere").validateSorting(failureCollector);
     Assert.assertEquals(1, failureCollector.getValidationFailures().size());
   }
 }

@@ -16,6 +16,7 @@
 
 package io.cdap.plugin.facebook.source.common.config;
 
+import com.facebook.ads.sdk.AdsInsights;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,6 +27,7 @@ import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.FailureCollector;
 import io.cdap.plugin.common.ReferencePluginConfig;
 import io.cdap.plugin.facebook.source.common.SchemaHelper;
+import io.cdap.plugin.facebook.source.common.exceptions.IllegalBreakdownException;
 import io.cdap.plugin.facebook.source.common.exceptions.IllegalInsightsFieldException;
 
 import java.util.Arrays;
@@ -48,6 +50,8 @@ public class BaseSourceConfig extends ReferencePluginConfig {
   public static final String PROPERTY_LEVEL = "level";
   public static final String PROPERTY_FILTERING = "filtering";
   public static final String PROPERTY_DATE_PRESET = "datePreset";
+  public static final String PROPERTY_BREAKDOWN = "breakdown";
+  public static final String PROPERTY_ADDITIONAL_BREAKDOWN = "additionalBreakdown";
 
   @Name(PROPERTY_ACCESS_TOKEN)
   @Description("Access Token.")
@@ -104,6 +108,18 @@ public class BaseSourceConfig extends ReferencePluginConfig {
   @Macro
   protected String datePreset;
 
+  @Name(PROPERTY_BREAKDOWN)
+  @Description("Primary breakdown.")
+  @Nullable
+  @Macro
+  protected String breakdown;
+
+  @Name(PROPERTY_ADDITIONAL_BREAKDOWN)
+  @Description("Additional breakdown. Can be selected with primary breakdowns marked by '*'.")
+  @Nullable
+  @Macro
+  protected String additionalBreakdown;
+
   /*
   Most likely unique delimiter that helps avoid problems with unescaped symbols in complex filters
   */
@@ -158,10 +174,6 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return level;
   }
 
-  public Breakdowns getBreakdown() {
-    return null;
-  }
-
   @Nullable
   public String getFiltering() {
     if (!Strings.isNullOrEmpty(filtering)) {
@@ -185,6 +197,22 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return datePreset;
   }
 
+  public Breakdowns getBreakdown() {
+    if (!Strings.isNullOrEmpty(breakdown) && !"none".equals(breakdown)) {
+      Breakdowns result = SourceConfigHelper.parseBreakdowns(breakdown);
+      if (!Strings.isNullOrEmpty(additionalBreakdown) && !"none".equals(additionalBreakdown)) {
+        AdsInsights.EnumActionBreakdowns additionalActionBreakdown =
+          SourceConfigHelper.actionBreakdownFromString(additionalBreakdown);
+        if (result.isJoinableWithAction() && result.getActionBreakdowns().contains(additionalActionBreakdown)) {
+          result.getActionBreakdowns().add(additionalActionBreakdown);
+        }
+      }
+      return result;
+    } else {
+      return null;
+    }
+  }
+
   public void validate(FailureCollector failureCollector) {
     if (!containsMacro(PROPERTY_ACCESS_TOKEN) && Strings.isNullOrEmpty(accessToken)) {
       failureCollector
@@ -205,6 +233,7 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
 
     validateObjectId(failureCollector);
+    validateBreakdowns(failureCollector);
     validateFields(failureCollector);
     validateFiltering(failureCollector);
     validateDatePreset(failureCollector);
@@ -282,6 +311,18 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     if (!SourceConfigHelper.isValidDatePreset(getDatePreset())) {
       failureCollector.addFailure(String.format("'%s' is not a valid date preset", getDatePreset()), null)
         .withConfigProperty(PROPERTY_DATE_PRESET);
+    }
+  }
+
+  void validateBreakdowns(FailureCollector failureCollector) {
+    if (!containsMacro(PROPERTY_BREAKDOWN)) {
+      try {
+        getBreakdown();
+      } catch (IllegalBreakdownException ex) {
+        failureCollector
+          .addFailure(ex.getMessage(), "Fix invalid breakdown value.")
+          .withConfigProperty(PROPERTY_BREAKDOWN);
+      }
     }
   }
 }
