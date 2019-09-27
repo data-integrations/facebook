@@ -161,6 +161,7 @@ public class FacebookBatchSourceTest extends HydratorTestBase {
         .put("sorting", "adset_name")
         .put("sortDirection", "ascending")
         .put("fields", "impressions,campaign_id,adset_id,adset_name")
+        .put("datePreset", "lifetime")
         .build(),
       null)
     );

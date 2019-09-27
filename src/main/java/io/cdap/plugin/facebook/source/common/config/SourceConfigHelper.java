@@ -429,9 +429,19 @@ public class SourceConfigHelper {
     }
   }
 
+  public static boolean isValidDatePreset(String datePreset) {
+    return validDatePresets.contains(datePreset);
+  }
+
   private static final List<String> validOperators = ImmutableList.of(
     "EQUAL", "NOT_EQUAL", "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LESS_THAN", "LESS_THAN_OR_EQUAL",
     "IN_RANGE", "NOT_IN_RANGE", "CONTAIN", "NOT_CONTAIN", "NOT_IN", "STARTS_WITH", "ANY", "ALL", "AFTER",
     "BEFORE", "NONE"
+  );
+
+  private static final List<String> validDatePresets = ImmutableList.of(
+    "today", "yesterday", "this_week_sun_today", "this_week_mon_today", "last_week_sun_sat", "last_week_mon_sun",
+    "this_month", "last_month", "this_quarter", "last_3d", "last_7d", "last_14d", "last_28d", "last_30d", "last_90d",
+    "this_year", "last_year", "lifetime"
   );
 }

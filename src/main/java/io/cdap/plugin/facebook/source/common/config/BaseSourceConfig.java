@@ -47,6 +47,7 @@ public class BaseSourceConfig extends ReferencePluginConfig {
   public static final String PROPERTY_FIELDS = "fields";
   public static final String PROPERTY_LEVEL = "level";
   public static final String PROPERTY_FILTERING = "filtering";
+  public static final String PROPERTY_DATE_PRESET = "datePreset";
 
   @Name(PROPERTY_ACCESS_TOKEN)
   @Description("Access Token.")
@@ -97,6 +98,11 @@ public class BaseSourceConfig extends ReferencePluginConfig {
   @Nullable
   @Macro
   protected String filtering;
+
+  @Name(PROPERTY_DATE_PRESET)
+  @Description("Time rage to query results.")
+  @Macro
+  protected String datePreset;
 
   /*
   Most likely unique delimiter that helps avoid problems with unescaped symbols in complex filters
@@ -175,6 +181,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
   }
 
+  public String getDatePreset() {
+    return datePreset;
+  }
+
   public void validate(FailureCollector failureCollector) {
     if (!containsMacro(PROPERTY_ACCESS_TOKEN) && Strings.isNullOrEmpty(accessToken)) {
       failureCollector
@@ -197,6 +207,7 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     validateObjectId(failureCollector);
     validateFields(failureCollector);
     validateFiltering(failureCollector);
+    validateDatePreset(failureCollector);
   }
 
   void validateObjectId(FailureCollector failureCollector) {
@@ -264,6 +275,13 @@ public class BaseSourceConfig extends ReferencePluginConfig {
           .withStacktrace(ex.getStackTrace())
           .withConfigProperty(PROPERTY_FILTERING);
       }
+    }
+  }
+
+  void validateDatePreset(FailureCollector failureCollector) {
+    if (!SourceConfigHelper.isValidDatePreset(getDatePreset())) {
+      failureCollector.addFailure(String.format("'%s' is not a valid date preset", getDatePreset()), null)
+        .withConfigProperty(PROPERTY_DATE_PRESET);
     }
   }
 }

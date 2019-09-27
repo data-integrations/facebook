@@ -35,7 +35,6 @@ import javax.annotation.Nullable;
 public class FacebookBatchSourceConfig extends BaseSourceConfig {
   public static final String PROPERTY_BREAKDOWN = "breakdown";
   public static final String PROPERTY_ADDITIONAL_BREAKDOWN = "additionalBreakdown";
-  public static final String PROPERTY_TIME_RANGES = "timeRanges";
   public static final String PROPERTY_SORTING = "sorting";
   public static final String PROPERTY_SORT_DIRECTION = "sortDirection";
 
@@ -50,12 +49,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
   @Nullable
   @Macro
   protected String additionalBreakdown;
-
-  @Name(PROPERTY_TIME_RANGES)
-  @Description("Time ranges.")
-  @Nullable
-  @Macro
-  protected String timeRanges;
 
   @Name(PROPERTY_SORTING)
   @Description("Field name to sort results by.")
@@ -87,12 +80,6 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     } else {
       return null;
     }
-  }
-
-
-  @Nullable
-  public String getTimeRanges() {
-    return timeRanges;
   }
 
   @Nullable

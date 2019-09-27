@@ -79,6 +79,8 @@ public class InsightsRequestFactory {
       request.setParam("level", config.getLevel());
     }
 
+    request.setParam("date_preset", config.getDatePreset());
+
     return request;
   }
 }

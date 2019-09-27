@@ -54,9 +54,6 @@ public class FacebookRecordReader extends RecordReader<NullWritable, AdsInsights
       if (fbConfig.getSorting() != null) {
         request.setParam("sort", fbConfig.getSorting());
       }
-      if (fbConfig.getTimeRanges() != null) {
-        request.setParam("time_ranges", fbConfig.getTimeRanges());
-      }
 
       currentPage = request.execute();
       currentPageIterator = currentPage.iterator();
