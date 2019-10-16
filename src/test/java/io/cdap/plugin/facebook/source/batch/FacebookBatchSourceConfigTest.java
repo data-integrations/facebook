@@ -17,29 +17,17 @@
 package io.cdap.plugin.facebook.source.batch;
 
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
+import io.cdap.plugin.facebook.source.BaseFacebookValidationTest;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FacebookBatchSourceConfigTest {
-
-  static class FacebookBatchSourceConfigMock extends FacebookBatchSourceConfig {
-
-    FacebookBatchSourceConfigMock() {
-      super("ref");
-    }
-
-    static FacebookBatchSourceConfig withSorting(String sorting, String direction) {
-      FacebookBatchSourceConfigMock result = new FacebookBatchSourceConfigMock();
-      result.sorting = sorting;
-      result.sortDirection = direction;
-      return result;
-    }
-  }
+public class FacebookBatchSourceConfigTest extends BaseFacebookValidationTest {
 
   @Test
   public void testSorting() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigMock.withSorting("field", "descending");
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setSorting("field").setSortDirection("descending").build();
     config.validateSorting(failureCollector);
 
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
@@ -49,7 +37,8 @@ public class FacebookBatchSourceConfigTest {
   @Test
   public void testSortingEmptyField() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfig config = FacebookBatchSourceConfigMock.withSorting(null, "descending");
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setSorting(null).setSortDirection("descending").build();
     config.validateSorting(failureCollector);
 
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
@@ -59,7 +48,10 @@ public class FacebookBatchSourceConfigTest {
   @Test
   public void testSortingInvalidDirection() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    FacebookBatchSourceConfigMock.withSorting("field", "nowhere").validateSorting(failureCollector);
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    FacebookBatchSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setSorting("field").setSortDirection("nowhere").build();
+    config.validateSorting(failureCollector);
+
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_SORT_DIRECTION);
   }
 }

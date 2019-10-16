@@ -18,58 +18,26 @@ package io.cdap.plugin.facebook.source.common.config;
 
 import com.facebook.ads.sdk.AdsInsights;
 import io.cdap.cdap.etl.mock.validation.MockFailureCollector;
+import io.cdap.plugin.facebook.source.BaseFacebookValidationTest;
+import io.cdap.plugin.facebook.source.batch.FacebookBatchSourceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BaseSourceConfigTest {
-  static class BaseSourceConfigMock extends BaseSourceConfig {
-
-    BaseSourceConfigMock() {
-      super("ref");
-    }
-
-    static BaseSourceConfig withIdsAndType(String adId, String adSetId, String accountId, String campaignId,
-                                           String objectType) {
-      BaseSourceConfig result = new BaseSourceConfigMock();
-      result.adId = adId;
-      result.adSetId = adSetId;
-      result.accountId = accountId;
-      result.campaignId = campaignId;
-      result.objectType = objectType;
-      return result;
-    }
-
-    static BaseSourceConfig withFiltering(String filtering) {
-      BaseSourceConfigMock result = new BaseSourceConfigMock();
-      result.filtering = filtering;
-      return result;
-    }
-
-    static BaseSourceConfig withFields(String fields) {
-      BaseSourceConfigMock result = new BaseSourceConfigMock();
-      result.fields = fields;
-      return result;
-    }
-
-    static BaseSourceConfig withBreakdown(String breakdown) {
-      BaseSourceConfigMock result = new BaseSourceConfigMock();
-      result.breakdown = breakdown;
-      return result;
-    }
-  }
-
+public class BaseSourceConfigTest extends BaseFacebookValidationTest {
   @Test
   public void testValidateObjectIdEmptyId() {
-    BaseSourceConfig config = BaseSourceConfigMock.withIdsAndType("", "", "", "", "Ad");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setAdId("").setAdSetId("").setAccountId("").setCampaignId("").setObjectType("Ad").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateObjectId(failureCollector);
 
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_AD_ID);
   }
 
   @Test
   public void testValidateObjectId() {
-    BaseSourceConfig config = BaseSourceConfigMock.withIdsAndType("adId", "", "", "", "Ad");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setAdId("adId").setAdSetId("").setAccountId("").setCampaignId("").setObjectType("Ad").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateObjectId(failureCollector);
 
@@ -79,7 +47,8 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateFields() {
-    BaseSourceConfig config = BaseSourceConfigMock.withFields("date_start,impressions");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setFields("date_start,impressions").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFields(failureCollector);
 
@@ -88,18 +57,19 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateFieldsInvalidField() {
-    BaseSourceConfig config = BaseSourceConfigMock.withFields("date_start,impressions,invalid");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setFields("date_start,impressions,invalid").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFields(failureCollector);
 
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_FIELDS);
   }
 
 
   @Test
   public void testValidateFiltering() {
-    BaseSourceConfig config = BaseSourceConfigMock.withFiltering(
-      "value:EQUAL(field)" + BaseSourceConfigMock.FILTERING_DELIMITER + "value2:EQUAL(field2)");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setFiltering("value:EQUAL(field)" + BaseSourceConfig.FILTERING_DELIMITER + "value2:EQUAL(field2)").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFiltering(failureCollector);
 
@@ -110,28 +80,34 @@ public class BaseSourceConfigTest {
   @Test
   public void testValidateFilteringEmptyOrNull() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigMock.withFiltering("").validateFiltering(failureCollector);
-    BaseSourceConfigMock.withFiltering(null).validateFiltering(failureCollector);
+    ((BaseSourceConfig) FacebookBatchSourceConfig.builder().setFiltering("").build())
+      .validateFiltering(failureCollector);
+    ((BaseSourceConfig) FacebookBatchSourceConfig.builder().setFiltering(null).build())
+      .validateFiltering(failureCollector);
     Assert.assertTrue(failureCollector.getValidationFailures().isEmpty());
   }
 
   @Test
   public void testValidateFilteringInvalidOp() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigMock.withFiltering("value:INVALID(field)").validateFiltering(failureCollector);
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    ((BaseSourceConfig) FacebookBatchSourceConfig.builder().setFiltering("value:INVALID(field)").build())
+      .validateFiltering(failureCollector);
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_FILTERING);
   }
 
   @Test
   public void testValidateFilteringInvalidFormat() {
     MockFailureCollector failureCollector = new MockFailureCollector();
-    BaseSourceConfigMock.withFiltering("valueEQUALS(field").validateFiltering(failureCollector);
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    ((BaseSourceConfig) FacebookBatchSourceConfig.builder().setFiltering("valueEQUALS(field").build())
+      .validateFiltering(failureCollector);
+
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_FILTERING);
   }
 
   @Test
   public void testValidateBreakdown() {
-    BaseSourceConfig config = BaseSourceConfigMock.withBreakdown("age, gender *");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setBreakdown("age, gender *").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateBreakdowns(failureCollector);
 
@@ -142,10 +118,11 @@ public class BaseSourceConfigTest {
 
   @Test
   public void testValidateBreakdownInvalid() {
-    BaseSourceConfig config = BaseSourceConfigMock.withBreakdown("age, gender, invalid *");
+    BaseSourceConfig config = FacebookBatchSourceConfig.builder()
+      .setBreakdown("age, gender, invalid *").build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateBreakdowns(failureCollector);
 
-    Assert.assertEquals(1, failureCollector.getValidationFailures().size());
+    assertSingleFieldValidationFailed(failureCollector, FacebookBatchSourceConfig.PROPERTY_BREAKDOWN);
   }
 }
