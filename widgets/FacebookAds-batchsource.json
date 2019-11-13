@@ -12,7 +12,7 @@
           "name": "referenceName"
         },
         {
-          "widget-type": "textbox",
+          "widget-type": "password",
           "label": "Access token",
           "name": "accessToken"
         }
@@ -1025,6 +1025,17 @@
               "action_target_id",
               "action_destination",
               "action_target_id"
+            ]
+          },
+          "plugin-function": {
+            "label": "Get Schema",
+            "widget": "outputSchema",
+            "output-property": "schema",
+            "position": "bottom",
+            "omit-properties": [
+              {
+                "name": "schema"
+              }
             ]
           }
         },

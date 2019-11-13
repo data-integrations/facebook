@@ -69,7 +69,8 @@ public class BaseSourceConfigTest extends BaseFacebookValidationTest {
   @Test
   public void testValidateFiltering() {
     BaseSourceConfig config = FacebookBatchSourceConfig.builder()
-      .setFiltering("value:EQUAL(field)" + BaseSourceConfig.FILTERING_DELIMITER + "value2:EQUAL(field2)").build();
+      .setFiltering("value1:CONTAIN(adset.name)" + BaseSourceConfig.FILTERING_DELIMITER + "value2:EQUAL(field2)")
+      .build();
     MockFailureCollector failureCollector = new MockFailureCollector();
     config.validateFiltering(failureCollector);
 

@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 @Name(FacebookBatchSource.NAME)
 @Description("Reads data from Facebook Insights API.")
 public class FacebookBatchSource extends BatchSource<NullWritable, AdsInsights, StructuredRecord> {
-  public static final String NAME = "FacebookAdsBatchSource";
+  public static final String NAME = "FacebookAds";
 
   private final FacebookBatchSourceConfig config;
 

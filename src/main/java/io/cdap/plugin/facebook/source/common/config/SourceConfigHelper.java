@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public class SourceConfigHelper {
 
-  private static final Pattern OPERATOR_FIELD_RE = Pattern.compile("([(A-Z_)]+)\\(([a-z\\d_]+)\\)");
+  private static final Pattern OPERATOR_FIELD_RE = Pattern.compile("([(A-Z_)]+)\\((\\S+)\\)");
 
   public static Breakdowns parseBreakdowns(String breakdownsString) {
     switch (breakdownsString) {
