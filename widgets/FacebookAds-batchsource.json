@@ -1,0 +1,1190 @@
+{
+  "metadata": {
+    "spec-version": "1.0"
+  },
+  "configuration-groups": [
+    {
+      "label": "General",
+      "properties": [
+        {
+          "widget-type": "textbox",
+          "label": "Reference Name",
+          "name": "referenceName"
+        },
+        {
+          "widget-type": "password",
+          "label": "Access token",
+          "name": "accessToken"
+        }
+      ]
+    },
+    {
+      "label": "Object query parameters",
+      "properties": [
+        {
+          "name": "objectType",
+          "label": "Object Type",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "Ad",
+            "values": [
+              "Campaign",
+              "Ad",
+              "Ad Set",
+              "Account"
+            ]
+          }
+        },
+        {
+          "name": "adId",
+          "label": "Ad Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "adSetId",
+          "label": "Ad Set Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "campaignId",
+          "label": "Campaign Id",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "accountId",
+          "label": "Account Id",
+          "widget-type": "textbox"
+        },
+        {
+          "label": "Level",
+          "name": "level",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "default",
+            "values": [
+              "ad",
+              "adset",
+              "campaign",
+              "account",
+              "default"
+            ]
+          }
+        },
+        {
+          "name": "fields",
+          "label": "Fields",
+          "widget-type": "multi-select",
+          "widget-attributes": {
+            "delimiter": ",",
+            "options": [
+              {
+                "id": "account_currency",
+                "label": "account_currency"
+              },
+              {
+                "id": "account_id",
+                "label": "account_id"
+              },
+              {
+                "id": "account_name",
+                "label": "account_name"
+              },
+              {
+                "id": "actions_per_impression",
+                "label": "actions_per_impression"
+              },
+              {
+                "id": "activity_recency",
+                "label": "activity_recency"
+              },
+              {
+                "id": "ad_bid_type",
+                "label": "ad_bid_type"
+              },
+              {
+                "id": "ad_bid_value",
+                "label": "ad_bid_value"
+              },
+              {
+                "id": "ad_delivery",
+                "label": "ad_delivery"
+              },
+              {
+                "id": "ad_format_asset",
+                "label": "ad_format_asset"
+              },
+              {
+                "id": "ad_id",
+                "label": "ad_id"
+              },
+              {
+                "id": "ad_name",
+                "label": "ad_name"
+              },
+              {
+                "id": "adset_bid_type",
+                "label": "adset_bid_type"
+              },
+              {
+                "id": "adset_bid_value",
+                "label": "adset_bid_value"
+              },
+              {
+                "id": "adset_budget_type",
+                "label": "adset_budget_type"
+              },
+              {
+                "id": "adset_budget_value",
+                "label": "adset_budget_value"
+              },
+              {
+                "id": "adset_delivery",
+                "label": "adset_delivery"
+              },
+              {
+                "id": "adset_end",
+                "label": "adset_end"
+              },
+              {
+                "id": "adset_id",
+                "label": "adset_id"
+              },
+              {
+                "id": "adset_name",
+                "label": "adset_name"
+              },
+              {
+                "id": "adset_start",
+                "label": "adset_start"
+              },
+              {
+                "id": "age",
+                "label": "age"
+              },
+              {
+                "id": "age_targeting",
+                "label": "age_targeting"
+              },
+              {
+                "id": "app_store_clicks",
+                "label": "app_store_clicks"
+              },
+              {
+                "id": "attention_events_per_impression",
+                "label": "attention_events_per_impression"
+              },
+              {
+                "id": "attention_events_unq_per_reach",
+                "label": "attention_events_unq_per_reach"
+              },
+              {
+                "id": "auction_bid",
+                "label": "auction_bid"
+              },
+              {
+                "id": "auction_competitiveness",
+                "label": "auction_competitiveness"
+              },
+              {
+                "id": "auction_max_competitor_bid",
+                "label": "auction_max_competitor_bid"
+              },
+              {
+                "id": "buying_type",
+                "label": "buying_type"
+              },
+              {
+                "id": "call_to_action_clicks",
+                "label": "call_to_action_clicks"
+              },
+              {
+                "id": "campaign_delivery",
+                "label": "campaign_delivery"
+              },
+              {
+                "id": "campaign_end",
+                "label": "campaign_end"
+              },
+              {
+                "id": "campaign_id",
+                "label": "campaign_id"
+              },
+              {
+                "id": "campaign_name",
+                "label": "campaign_name"
+              },
+              {
+                "id": "campaign_start",
+                "label": "campaign_start"
+              },
+              {
+                "id": "canvas_avg_view_percent",
+                "label": "canvas_avg_view_percent"
+              },
+              {
+                "id": "canvas_avg_view_time",
+                "label": "canvas_avg_view_time"
+              },
+              {
+                "id": "card_views",
+                "label": "card_views"
+              },
+              {
+                "id": "clicks",
+                "label": "clicks"
+              },
+              {
+                "id": "cost_per_dda_countby_convs",
+                "label": "cost_per_dda_countby_convs"
+              },
+              {
+                "id": "cost_per_dwell",
+                "label": "cost_per_dwell"
+              },
+              {
+                "id": "cost_per_dwell_3_sec",
+                "label": "cost_per_dwell_3_sec"
+              },
+              {
+                "id": "cost_per_dwell_5_sec",
+                "label": "cost_per_dwell_5_sec"
+              },
+              {
+                "id": "cost_per_dwell_7_sec",
+                "label": "cost_per_dwell_7_sec"
+              },
+              {
+                "id": "cost_per_estimated_ad_recallers",
+                "label": "cost_per_estimated_ad_recallers"
+              },
+              {
+                "id": "cost_per_inline_link_click",
+                "label": "cost_per_inline_link_click"
+              },
+              {
+                "id": "cost_per_inline_post_engagement",
+                "label": "cost_per_inline_post_engagement"
+              },
+              {
+                "id": "cost_per_total_action",
+                "label": "cost_per_total_action"
+              },
+              {
+                "id": "cost_per_unique_click",
+                "label": "cost_per_unique_click"
+              },
+              {
+                "id": "cost_per_unique_inline_link_click",
+                "label": "cost_per_unique_inline_link_click"
+              },
+              {
+                "id": "country",
+                "label": "country"
+              },
+              {
+                "id": "cpc",
+                "label": "cpc"
+              },
+              {
+                "id": "cpm",
+                "label": "cpm"
+              },
+              {
+                "id": "cpp",
+                "label": "cpp"
+              },
+              {
+                "id": "created_time",
+                "label": "created_time"
+              },
+              {
+                "id": "creative_fingerprint",
+                "label": "creative_fingerprint"
+              },
+              {
+                "id": "ctr",
+                "label": "ctr"
+              },
+              {
+                "id": "date_start",
+                "label": "date_start"
+              },
+              {
+                "id": "date_stop",
+                "label": "date_stop"
+              },
+              {
+                "id": "dda_countby_convs",
+                "label": "dda_countby_convs"
+              },
+              {
+                "id": "deduping_1st_source_ratio",
+                "label": "deduping_1st_source_ratio"
+              },
+              {
+                "id": "deduping_2nd_source_ratio",
+                "label": "deduping_2nd_source_ratio"
+              },
+              {
+                "id": "deduping_3rd_source_ratio",
+                "label": "deduping_3rd_source_ratio"
+              },
+              {
+                "id": "deduping_ratio",
+                "label": "deduping_ratio"
+              },
+              {
+                "id": "deeplink_clicks",
+                "label": "deeplink_clicks"
+              },
+              {
+                "id": "device_platform",
+                "label": "device_platform"
+              },
+              {
+                "id": "dma",
+                "label": "dma"
+              },
+              {
+                "id": "dwell_3_sec",
+                "label": "dwell_3_sec"
+              },
+              {
+                "id": "dwell_5_sec",
+                "label": "dwell_5_sec"
+              },
+              {
+                "id": "dwell_7_sec",
+                "label": "dwell_7_sec"
+              },
+              {
+                "id": "dwell_rate",
+                "label": "dwell_rate"
+              },
+              {
+                "id": "earned_impression",
+                "label": "earned_impression"
+              },
+              {
+                "id": "estimated_ad_recall_rate",
+                "label": "estimated_ad_recall_rate"
+              },
+              {
+                "id": "estimated_ad_recall_rate_lower_bound",
+                "label": "estimated_ad_recall_rate_lower_bound"
+              },
+              {
+                "id": "estimated_ad_recall_rate_upper_bound",
+                "label": "estimated_ad_recall_rate_upper_bound"
+              },
+              {
+                "id": "estimated_ad_recallers",
+                "label": "estimated_ad_recallers"
+              },
+              {
+                "id": "estimated_ad_recallers_lower_bound",
+                "label": "estimated_ad_recallers_lower_bound"
+              },
+              {
+                "id": "estimated_ad_recallers_upper_bound",
+                "label": "estimated_ad_recallers_upper_bound"
+              },
+              {
+                "id": "frequency",
+                "label": "frequency"
+              },
+              {
+                "id": "frequency_value",
+                "label": "frequency_value"
+              },
+              {
+                "id": "full_view_impressions",
+                "label": "full_view_impressions"
+              },
+              {
+                "id": "full_view_reach",
+                "label": "full_view_reach"
+              },
+              {
+                "id": "gender",
+                "label": "gender"
+              },
+              {
+                "id": "gender_targeting",
+                "label": "gender_targeting"
+              },
+              {
+                "id": "hourly_stats_aggregated_by_advertiser_time_zone",
+                "label": "hourly_stats_aggregated_by_advertiser_time_zone"
+              },
+              {
+                "id": "hourly_stats_aggregated_by_audience_time_zone",
+                "label": "hourly_stats_aggregated_by_audience_time_zone"
+              },
+              {
+                "id": "impression_device",
+                "label": "impression_device"
+              },
+              {
+                "id": "impressions",
+                "label": "impressions"
+              },
+              {
+                "id": "impressions_auto_refresh",
+                "label": "impressions_auto_refresh"
+              },
+              {
+                "id": "impressions_gross",
+                "label": "impressions_gross"
+              },
+              {
+                "id": "inline_link_click_ctr",
+                "label": "inline_link_click_ctr"
+              },
+              {
+                "id": "inline_link_clicks",
+                "label": "inline_link_clicks"
+              },
+              {
+                "id": "inline_post_engagement",
+                "label": "inline_post_engagement"
+              },
+              {
+                "id": "instant_experience_clicks_to_open",
+                "label": "instant_experience_clicks_to_open"
+              },
+              {
+                "id": "instant_experience_clicks_to_start",
+                "label": "instant_experience_clicks_to_start"
+              },
+              {
+                "id": "instant_experience_outbound_clicks",
+                "label": "instant_experience_outbound_clicks"
+              },
+              {
+                "id": "labels",
+                "label": "labels"
+              },
+              {
+                "id": "location",
+                "label": "location"
+              },
+              {
+                "id": "newsfeed_avg_position",
+                "label": "newsfeed_avg_position"
+              },
+              {
+                "id": "newsfeed_clicks",
+                "label": "newsfeed_clicks"
+              },
+              {
+                "id": "newsfeed_impressions",
+                "label": "newsfeed_impressions"
+              },
+              {
+                "id": "objective",
+                "label": "objective"
+              },
+              {
+                "id": "optimization_goal",
+                "label": "optimization_goal"
+              },
+              {
+                "id": "performance_indicator",
+                "label": "performance_indicator"
+              },
+              {
+                "id": "place_page_id",
+                "label": "place_page_id"
+              },
+              {
+                "id": "place_page_name",
+                "label": "place_page_name"
+              },
+              {
+                "id": "placement",
+                "label": "placement"
+              },
+              {
+                "id": "platform_position",
+                "label": "platform_position"
+              },
+              {
+                "id": "product_id",
+                "label": "product_id"
+              },
+              {
+                "id": "publisher_platform",
+                "label": "publisher_platform"
+              },
+              {
+                "id": "quality_score_ectr",
+                "label": "quality_score_ectr"
+              },
+              {
+                "id": "quality_score_ecvr",
+                "label": "quality_score_ecvr"
+              },
+              {
+                "id": "quality_score_enfbr",
+                "label": "quality_score_enfbr"
+              },
+              {
+                "id": "quality_score_organic",
+                "label": "quality_score_organic"
+              },
+              {
+                "id": "reach",
+                "label": "reach"
+              },
+              {
+                "id": "region",
+                "label": "region"
+              },
+              {
+                "id": "social_spend",
+                "label": "social_spend"
+              },
+              {
+                "id": "spend",
+                "label": "spend"
+              },
+              {
+                "id": "thumb_stops",
+                "label": "thumb_stops"
+              },
+              {
+                "id": "today_spend",
+                "label": "today_spend"
+              },
+              {
+                "id": "total_action_value",
+                "label": "total_action_value"
+              },
+              {
+                "id": "total_actions",
+                "label": "total_actions"
+              },
+              {
+                "id": "total_unique_actions",
+                "label": "total_unique_actions"
+              },
+              {
+                "id": "unique_clicks",
+                "label": "unique_clicks"
+              },
+              {
+                "id": "unique_ctr",
+                "label": "unique_ctr"
+              },
+              {
+                "id": "unique_impressions",
+                "label": "unique_impressions"
+              },
+              {
+                "id": "unique_inline_link_click_ctr",
+                "label": "unique_inline_link_click_ctr"
+              },
+              {
+                "id": "unique_inline_link_clicks",
+                "label": "unique_inline_link_clicks"
+              },
+              {
+                "id": "unique_link_clicks_ctr",
+                "label": "unique_link_clicks_ctr"
+              },
+              {
+                "id": "updated_time",
+                "label": "updated_time"
+              },
+              {
+                "id": "website_clicks",
+                "label": "website_clicks"
+              },
+              {
+                "id": "wish_bid",
+                "label": "wish_bid"
+              },
+              {
+                "id": "actions_results",
+                "label": "actions_results"
+              },
+              {
+                "id": "cost_per_action_result",
+                "label": "cost_per_action_result"
+              },
+              {
+                "id": "action_values",
+                "label": "action_values"
+              },
+              {
+                "id": "actions",
+                "label": "actions"
+              },
+              {
+                "id": "ad_click_actions",
+                "label": "ad_click_actions"
+              },
+              {
+                "id": "ad_impression_actions",
+                "label": "ad_impression_actions"
+              },
+              {
+                "id": "amount_in_catalog_currency",
+                "label": "amount_in_catalog_currency"
+              },
+              {
+                "id": "cancel_subscription_actions",
+                "label": "cancel_subscription_actions"
+              },
+              {
+                "id": "catalog_segment_actions",
+                "label": "catalog_segment_actions"
+              },
+              {
+                "id": "catalog_segment_value_in_catalog_currency",
+                "label": "catalog_segment_value_in_catalog_currency"
+              },
+              {
+                "id": "catalog_segment_value_mobile_purchase_roas",
+                "label": "catalog_segment_value_mobile_purchase_roas"
+              },
+              {
+                "id": "catalog_segment_value_website_purchase_roas",
+                "label": "catalog_segment_value_website_purchase_roas"
+              },
+              {
+                "id": "conditional_time_spent_ms_over_10s_actions",
+                "label": "conditional_time_spent_ms_over_10s_actions"
+              },
+              {
+                "id": "conditional_time_spent_ms_over_15s_actions",
+                "label": "conditional_time_spent_ms_over_15s_actions"
+              },
+              {
+                "id": "conditional_time_spent_ms_over_2s_actions",
+                "label": "conditional_time_spent_ms_over_2s_actions"
+              },
+              {
+                "id": "conditional_time_spent_ms_over_3s_actions",
+                "label": "conditional_time_spent_ms_over_3s_actions"
+              },
+              {
+                "id": "conditional_time_spent_ms_over_6s_actions",
+                "label": "conditional_time_spent_ms_over_6s_actions"
+              },
+              {
+                "id": "contact_actions",
+                "label": "contact_actions"
+              },
+              {
+                "id": "contact_value",
+                "label": "contact_value"
+              },
+              {
+                "id": "conversion_values",
+                "label": "conversion_values"
+              },
+              {
+                "id": "conversions",
+                "label": "conversions"
+              },
+              {
+                "id": "cost_per_10_sec_video_view",
+                "label": "cost_per_10_sec_video_view"
+              },
+              {
+                "id": "cost_per_15_sec_video_view",
+                "label": "cost_per_15_sec_video_view"
+              },
+              {
+                "id": "cost_per_2_sec_continuous_video_view",
+                "label": "cost_per_2_sec_continuous_video_view"
+              },
+              {
+                "id": "cost_per_action_type",
+                "label": "cost_per_action_type"
+              },
+              {
+                "id": "cost_per_ad_click",
+                "label": "cost_per_ad_click"
+              },
+              {
+                "id": "cost_per_completed_video_view",
+                "label": "cost_per_completed_video_view"
+              },
+              {
+                "id": "cost_per_contact",
+                "label": "cost_per_contact"
+              },
+              {
+                "id": "cost_per_conversion",
+                "label": "cost_per_conversion"
+              },
+              {
+                "id": "cost_per_customize_product",
+                "label": "cost_per_customize_product"
+              },
+              {
+                "id": "cost_per_donate",
+                "label": "cost_per_donate"
+              },
+              {
+                "id": "cost_per_find_location",
+                "label": "cost_per_find_location"
+              },
+              {
+                "id": "cost_per_one_thousand_ad_impression",
+                "label": "cost_per_one_thousand_ad_impression"
+              },
+              {
+                "id": "cost_per_outbound_click",
+                "label": "cost_per_outbound_click"
+              },
+              {
+                "id": "cost_per_schedule",
+                "label": "cost_per_schedule"
+              },
+              {
+                "id": "cost_per_start_trial",
+                "label": "cost_per_start_trial"
+              },
+              {
+                "id": "cost_per_submit_application",
+                "label": "cost_per_submit_application"
+              },
+              {
+                "id": "cost_per_subscribe",
+                "label": "cost_per_subscribe"
+              },
+              {
+                "id": "cost_per_thruplay",
+                "label": "cost_per_thruplay"
+              },
+              {
+                "id": "cost_per_unique_action_type",
+                "label": "cost_per_unique_action_type"
+              },
+              {
+                "id": "cost_per_unique_conversion",
+                "label": "cost_per_unique_conversion"
+              },
+              {
+                "id": "cost_per_unique_outbound_click",
+                "label": "cost_per_unique_outbound_click"
+              },
+              {
+                "id": "customize_product_actions",
+                "label": "customize_product_actions"
+              },
+              {
+                "id": "customize_product_value",
+                "label": "customize_product_value"
+              },
+              {
+                "id": "donate_actions",
+                "label": "donate_actions"
+              },
+              {
+                "id": "donate_value",
+                "label": "donate_value"
+              },
+              {
+                "id": "find_location_actions",
+                "label": "find_location_actions"
+              },
+              {
+                "id": "find_location_value",
+                "label": "find_location_value"
+              },
+              {
+                "id": "interactive_component_tap",
+                "label": "interactive_component_tap"
+              },
+              {
+                "id": "mobile_app_purchase_roas",
+                "label": "mobile_app_purchase_roas"
+              },
+              {
+                "id": "outbound_clicks",
+                "label": "outbound_clicks"
+              },
+              {
+                "id": "outbound_clicks_ctr",
+                "label": "outbound_clicks_ctr"
+              },
+              {
+                "id": "purchase_roas",
+                "label": "purchase_roas"
+              },
+              {
+                "id": "recurring_subscription_payment_actions",
+                "label": "recurring_subscription_payment_actions"
+              },
+              {
+                "id": "schedule_actions",
+                "label": "schedule_actions"
+              },
+              {
+                "id": "schedule_value",
+                "label": "schedule_value"
+              },
+              {
+                "id": "start_trial_actions",
+                "label": "start_trial_actions"
+              },
+              {
+                "id": "start_trial_value",
+                "label": "start_trial_value"
+              },
+              {
+                "id": "submit_application_actions",
+                "label": "submit_application_actions"
+              },
+              {
+                "id": "submit_application_value",
+                "label": "submit_application_value"
+              },
+              {
+                "id": "subscribe_actions",
+                "label": "subscribe_actions"
+              },
+              {
+                "id": "subscribe_value",
+                "label": "subscribe_value"
+              },
+              {
+                "id": "unique_actions",
+                "label": "unique_actions"
+              },
+              {
+                "id": "unique_conversions",
+                "label": "unique_conversions"
+              },
+              {
+                "id": "unique_outbound_clicks",
+                "label": "unique_outbound_clicks"
+              },
+              {
+                "id": "unique_outbound_clicks_ctr",
+                "label": "unique_outbound_clicks_ctr"
+              },
+              {
+                "id": "unique_video_continuous_2_sec_watched_actions",
+                "label": "unique_video_continuous_2_sec_watched_actions"
+              },
+              {
+                "id": "unique_video_view_10_sec",
+                "label": "unique_video_view_10_sec"
+              },
+              {
+                "id": "unique_video_view_15_sec",
+                "label": "unique_video_view_15_sec"
+              },
+              {
+                "id": "video_10_sec_watched_actions",
+                "label": "video_10_sec_watched_actions"
+              },
+              {
+                "id": "video_15_sec_watched_actions",
+                "label": "video_15_sec_watched_actions"
+              },
+              {
+                "id": "video_30_sec_watched_actions",
+                "label": "video_30_sec_watched_actions"
+              },
+              {
+                "id": "video_avg_time_watched_actions",
+                "label": "video_avg_time_watched_actions"
+              },
+              {
+                "id": "video_complete_watched_actions",
+                "label": "video_complete_watched_actions"
+              },
+              {
+                "id": "video_completed_view_or_15s_passed_actions",
+                "label": "video_completed_view_or_15s_passed_actions"
+              },
+              {
+                "id": "video_continuous_2_sec_watched_actions",
+                "label": "video_continuous_2_sec_watched_actions"
+              },
+              {
+                "id": "video_p100_watched_actions",
+                "label": "video_p100_watched_actions"
+              },
+              {
+                "id": "video_p25_watched_actions",
+                "label": "video_p25_watched_actions"
+              },
+              {
+                "id": "video_p50_watched_actions",
+                "label": "video_p50_watched_actions"
+              },
+              {
+                "id": "video_p75_watched_actions",
+                "label": "video_p75_watched_actions"
+              },
+              {
+                "id": "video_play_actions",
+                "label": "video_play_actions"
+              },
+              {
+                "id": "video_thruplay_watched_actions",
+                "label": "video_thruplay_watched_actions"
+              },
+              {
+                "id": "video_time_watched_actions",
+                "label": "video_time_watched_actions"
+              },
+              {
+                "id": "website_ctr",
+                "label": "website_ctr"
+              },
+              {
+                "id": "website_purchase_roas",
+                "label": "website_purchase_roas"
+              }
+            ]
+          }
+        },
+        {
+          "name": "breakdown",
+          "label": "Breakdown",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "none",
+            "values": [
+              "none",
+              "action_canvas_component_name",
+              "action_carousel_card_id",
+              "action_carousel_card_id, age",
+              "action_carousel_card_id, age, gender",
+              "action_carousel_card_id, country",
+              "action_carousel_card_id, gender",
+              "action_carousel_card_id, impression_device",
+              "action_carousel_card_name",
+              "action_carousel_card_name, age",
+              "action_carousel_card_name, age, gender",
+              "action_carousel_card_name, country",
+              "action_carousel_card_name, gender",
+              "action_carousel_card_name, impression_device",
+              "action_converted_product_id",
+              "action_destination",
+              "action_device *",
+              "action_device, impression_device *",
+              "action_device, publisher_platform *",
+              "action_device, publisher_platform, impression_device *",
+              "action_device, publisher_platform, platform_position *",
+              "action_device, publisher_platform, platform_position, impression_device *",
+              "action_reaction",
+              "action_target_id *",
+              "action_type *",
+              "action_type, action_converted_product_id",
+              "action_type, action_reaction",
+              "action_video_sound",
+              "action_video_type",
+              "ad_format_asset",
+              "age *",
+              "age, gender *",
+              "body_asset",
+              "call_to_action_asset",
+              "country *",
+              "description_asset",
+              "device_platform",
+              "dma",
+              "frequency_value",
+              "gender *",
+              "hourly_stats_aggregated_by_advertiser_time_zone *",
+              "hourly_stats_aggregated_by_audience_time_zone *",
+              "image_asset",
+              "impression_device",
+              "link_url_asset",
+              "place_page_id",
+              "platform_position",
+              "product_id *",
+              "publisher_platform *",
+              "publisher_platform, impression_device *",
+              "publisher_platform, platform_position *",
+              "publisher_platform, platform_position, impression_device *",
+              "region *",
+              "title_asset",
+              "video_asset"
+            ]
+          }
+        },
+        {
+          "name": "additionalBreakdown",
+          "label": "Additional Breakdown",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "none",
+            "values": [
+              "none",
+              "action_type",
+              "action_target_id",
+              "action_destination",
+              "action_target_id"
+            ]
+          },
+          "plugin-function": {
+            "label": "Get Schema",
+            "widget": "outputSchema",
+            "output-property": "schema",
+            "position": "bottom",
+            "omit-properties": [
+              {
+                "name": "schema"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sorting",
+          "label": "Sorting",
+          "widget-type": "textbox"
+        },
+        {
+          "name": "sortDirection",
+          "label": "Sort Direction",
+          "widget-type": "radio-group",
+          "widget-attributes": {
+            "layout": "inline",
+            "default": "ascending",
+            "options": [
+              {
+                "id": "ascending",
+                "label": "Ascending"
+              },
+              {
+                "id": "descending",
+                "label": "Descending"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "label": "API limits",
+      "properties": [
+        {
+          "widget-type": "function-dropdown-with-alias",
+          "name": "filtering",
+          "label": "Filtering",
+          "widget-attributes": {
+            "placeholders": {
+              "field": "field",
+              "alias": "value"
+            },
+            "delimiter": "%!delim@%",
+            "dropdownOptions": [
+              "EQUAL",
+              "NOT_EQUAL",
+              "GREATER_THAN",
+              "GREATER_THAN_OR_EQUAL",
+              "LESS_THAN",
+              "LESS_THAN_OR_EQUAL",
+              "IN_RANGE",
+              "NOT_IN_RANGE",
+              "CONTAIN",
+              "NOT_CONTAIN",
+              "NOT_IN",
+              "STARTS_WITH",
+              "ANY",
+              "ALL",
+              "AFTER",
+              "BEFORE",
+              "NONE"
+            ]
+          }
+        },
+        {
+          "name": "datePreset",
+          "label": "Time Range",
+          "widget-type": "select",
+          "widget-attributes": {
+            "default": "today",
+            "values": [
+              "today",
+              "yesterday",
+              "this_week_sun_today",
+              "this_week_mon_today",
+              "last_week_sun_sat",
+              "last_week_mon_sun",
+              "this_month",
+              "last_month",
+              "this_quarter",
+              "last_3d",
+              "last_7d",
+              "last_14d",
+              "last_28d",
+              "last_30d",
+              "last_90d",
+              "this_year",
+              "last_year",
+              "lifetime"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "widget-type": "non-editable-schema-editor",
+      "schema": {
+      }
+    }
+  ],
+  "filters": [
+    {
+      "name": "Campaign Id",
+      "condition": {
+        "expression": "objectType == 'Campaign'"
+      },
+      "show": [
+        {
+          "name": "campaignId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Ad Id",
+      "condition": {
+        "expression": "objectType == 'Ad'"
+      },
+      "show": [
+        {
+          "name": "adId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Ad Set Id",
+      "condition": {
+        "expression": "objectType == 'Ad Set'"
+      },
+      "show": [
+        {
+          "name": "adSetId",
+          "type": "property"
+        }
+      ]
+    },
+    {
+      "name": "Account Id",
+      "condition": {
+        "expression": "objectType == 'Account'"
+      },
+      "show": [
+        {
+          "name": "accountId",
+          "type": "property"
+        }
+      ]
+    }
+  ]
+}
