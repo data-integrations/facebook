@@ -140,6 +140,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return ObjectType.fromString(objectType);
   }
 
+  /**
+   * Returns the object id depending on the object type set.
+   * @return The string value of either campaignId / AdId / adSetId / accountId
+   */
   public String getObjectId() {
     switch (getObjectType()) {
       case Campaign:
@@ -155,6 +159,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
   }
 
+  /**
+   * Returns list of field names.
+   * @return the list of fields
+   */
   public List<String> getFields() {
     if (!Strings.isNullOrEmpty(fields)) {
       return Arrays.asList(fields.split(","));
@@ -163,6 +171,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
   }
 
+  /**
+   * Returns selected Schema.
+   * @return instance of Schema
+   */
   public Schema getSchema() {
     if (schema == null) {
       schema = SchemaHelper.buildSchema(getFields(), getBreakdown());
@@ -174,6 +186,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return level;
   }
 
+  /**
+   * Returns selected Filtering.
+   * @return  String of Filtering
+   */
   @Nullable
   public String getFiltering() {
     if (!Strings.isNullOrEmpty(filtering)) {
@@ -183,6 +199,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
   }
 
+  /**
+   * Returns selected Filters.
+   * @return  The list of Filter
+   */
   public List<Filter> getFilters() {
     if (!Strings.isNullOrEmpty(filtering)) {
       return Arrays.stream(filtering.split(FILTERING_DELIMITER))
@@ -197,6 +217,10 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     return datePreset;
   }
 
+  /**
+   * Returns selected Breakdown.
+   * @return   The instance of Breakdowns
+   */
   public Breakdowns getBreakdown() {
     if (!Strings.isNullOrEmpty(breakdown) && !"none".equals(breakdown)) {
       Breakdowns result = SourceConfigHelper.parseBreakdowns(breakdown);
@@ -213,6 +237,9 @@ public class BaseSourceConfig extends ReferencePluginConfig {
     }
   }
 
+  /**
+   * Validates {@link BaseSourceConfig} instance.
+   */
   public void validate(FailureCollector failureCollector) {
     if (!containsMacro(PROPERTY_ACCESS_TOKEN) && Strings.isNullOrEmpty(accessToken)) {
       failureCollector

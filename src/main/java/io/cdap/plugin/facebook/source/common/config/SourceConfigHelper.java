@@ -34,20 +34,28 @@ public class SourceConfigHelper {
 
   private static final Pattern OPERATOR_FIELD_RE = Pattern.compile("([(A-Z_)]+)\\((\\S+)\\)");
 
+  /**
+   * Returns selected Breakdowns.
+   * @param breakdownsString The breakdowns string
+   * @return   The instance of Breakdowns
+   */
   public static Breakdowns parseBreakdowns(String breakdownsString) {
     switch (breakdownsString) {
+      /*
       case "action_converted_product_id":
         return new Breakdowns(
           Collections.emptyList(),
           Collections.singletonList(AdsInsights.EnumActionBreakdowns.VALUE_ACTION_CONVERTED_PRODUCT_ID),
           false
         );
+      */
       case "action_type *":
         return new Breakdowns(
           Collections.emptyList(),
           Collections.singletonList(AdsInsights.EnumActionBreakdowns.VALUE_ACTION_TYPE),
           true
         );
+      /*
       case "action_type, action_converted_product_id":
         return new Breakdowns(
           Collections.emptyList(),
@@ -57,6 +65,7 @@ public class SourceConfigHelper {
           ),
           false
         );
+      */
       case "action_target_id *":
         return new Breakdowns(
           Collections.emptyList(),
@@ -400,6 +409,11 @@ public class SourceConfigHelper {
     }
   }
 
+  /**
+   * Returns selected EnumActionBreakdowns.
+   * @param breakdown The breakdown
+   * @return   The EnumActionBreakdowns of  AdsInsights
+   */
   public static AdsInsights.EnumActionBreakdowns actionBreakdownFromString(String breakdown) {
     Preconditions.checkNotNull(breakdown, "breakdown must not be null");
     return Arrays.stream(AdsInsights.EnumActionBreakdowns.values())
@@ -410,6 +424,11 @@ public class SourceConfigHelper {
       );
   }
 
+  /**
+   * Returns selected Filter.
+   * @param item The item
+   * @return The instance of Filter
+   */
   public static Filter parseFilteringItem(String item) {
     // filtering item will be in format 'some random text:OPERATOR(field)'
     // everything after last ':' is the operator and field name and can't contain some special characters,

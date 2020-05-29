@@ -33,6 +33,11 @@ public enum ObjectType {
     this.stringValue = stringValue;
   }
 
+  /**
+   * Returns selected ObjectType.
+   * @param value The value
+   * @return  The instance of ObjectType
+   */
   public static ObjectType fromString(String value) {
     return Arrays.stream(ObjectType.values())
       .filter(type -> type.stringValue.equals(value))

@@ -24,6 +24,12 @@ public class Filter {
   String operator;
   String value;
 
+  /**
+   * Constructor for Breakdowns object.
+   * @param field     The field
+   * @param operator  The operator
+   * @param value     The value
+   */
   public Filter(String field, String operator, String value) {
     this.field = field;
     this.operator = operator;

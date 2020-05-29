@@ -24,7 +24,7 @@ import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import java.util.Map;
 
 /**
- * InputFormatProvider used by cdap to provide configurations to mapreduce job
+ * InputFormatProvider used by cdap to provide configurations to mapreduce job.
  */
 public class FacebookInputFormatProvider implements InputFormatProvider {
   public static final String PROPERTY_CONFIG_JSON = "cdap.facebook.ads.config";

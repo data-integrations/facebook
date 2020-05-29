@@ -70,6 +70,10 @@ public class FacebookBatchSourceConfig extends BaseSourceConfig {
     return new Builder();
   }
 
+  /**
+   * Returns selected sort order.
+   * @return The String
+   */
   @Nullable
   public String getSorting() {
     if (!Strings.isNullOrEmpty(sorting) && !Strings.isNullOrEmpty(sortDirection)) {

@@ -28,6 +28,12 @@ public class Breakdowns {
   List<AdsInsights.EnumActionBreakdowns> actionBreakdowns;
   boolean joinableWithAction;
 
+  /**
+   * Constructor for Breakdowns object.
+   * @param breakdowns            The breakdowns
+   * @param actionBreakdowns      The action breakdowns
+   * @param joinableWithAction    The joinable with action
+   */
   public Breakdowns(List<AdsInsights.EnumBreakdowns> breakdowns,
                     List<AdsInsights.EnumActionBreakdowns> actionBreakdowns, boolean joinableWithAction) {
     this.breakdowns = breakdowns;

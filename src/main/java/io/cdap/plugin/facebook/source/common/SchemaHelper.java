@@ -33,6 +33,12 @@ import java.util.stream.Collectors;
  * Helper class to map Facebook Insights fields sets to final {@link Schema}.
  */
 public class SchemaHelper {
+  /**
+   * Returns selected Schema.
+   * @param fields      The fields
+   * @param breakdowns  The breakdowns
+   * @return   The instance of Schema
+   */
   public static Schema buildSchema(List<String> fields, Breakdowns breakdowns) {
     Set<String> schemaFields = Sets.newHashSet(fields);
     // ensure that fields introduced by breakdowns added to schema
@@ -107,6 +113,11 @@ public class SchemaHelper {
     return API_FIELD_NAME_TO_SCHEMA_NAME.getOrDefault(fieldName, fieldName);
   }
 
+  /**
+   *   Returns selected Field.
+   * @param name the name
+   * @return   the field of Schema
+   */
   public static Schema.Field fromName(String name) {
     switch (name) {
       case "account_currency":
