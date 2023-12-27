@@ -33,7 +33,7 @@
     <app.parents>system:cdap-data-pipeline[6.1.1,7.0.0),system:cdap-data-streams[6.1.1,7.0.0)</app.parents>
     <!-- this is here because project.basedir evaluates to null in the script build step -->
     <main.basedir>${project.basedir}</main.basedir>
-    <cdap.version>6.4.0</cdap.version>
+    <cdap.version>6.1.1</cdap.version>
     <hadoop.version>2.3.0</hadoop.version>
     <hydrator.version>2.3.5</hydrator.version>
     <junit.version>4.11</junit.version>
