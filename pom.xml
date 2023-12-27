@@ -50,6 +50,10 @@
       <id>sonatype-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
+    <repository>
+      <id>conjars-replacement</id>
+      <url>https://repository.mapr.com/nexus/content/groups/mapr-public/conjars/</url>
+    </repository>
   </repositories>
 
   <dependencies>
